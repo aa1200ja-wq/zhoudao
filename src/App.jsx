@@ -173,14 +173,60 @@ function Section({ title, children }) {
 }
 
 function ProjectModal({ project, onClose, onSave }) {
+  const [editing, setEditing] = useState(!project.id)
   const [draft, setDraft] = useState(project)
-  return <Sheet title={project.id ? project.name : '新增專案'} onClose={onClose}>
+
+  if (!editing) {
+    return <Sheet title={project.name} onClose={onClose}>
+      <div className="project-resume-head">
+        <div>
+          <span className="project-status">{project.status}</span>
+          <strong>{project.progress}%</strong>
+        </div>
+        <div className="progress project-resume-progress"><i style={{ width: project.progress + '%' }} /></div>
+      </div>
+
+      <section className="project-resume-summary">
+        <div>
+          <small>目前做到</small>
+          <p>{project.current || '尚未填寫'}</p>
+        </div>
+        <div className="project-next-block">
+          <small>下一步</small>
+          <p>{project.next || '尚未填寫'}</p>
+        </div>
+      </section>
+
+      <details className="project-detail-accordion">
+        <summary>
+          <span>展開詳細資訊</span>
+          <span className="accordion-chevron">⌄</span>
+        </summary>
+        <div className="project-detail-body">
+          <div>
+            <small>當時的想法／草稿</small>
+            <p>{project.draft || '目前沒有補充內容。'}</p>
+          </div>
+          <div>
+            <small>最後更新</small>
+            <p>{project.updatedAt ? formatTime(project.updatedAt) : '尚無紀錄'}</p>
+          </div>
+        </div>
+      </details>
+
+      <button className="secondary full" onClick={() => setEditing(true)}>編輯專案</button>
+    </Sheet>
+  }
+
+  return <Sheet title={project.id ? '編輯專案' : '新增專案'} onClose={onClose}>
     <label>專案名稱<input value={draft.name} onChange={e => setDraft({ ...draft, name: e.target.value })} /></label>
     <label>目前做到<textarea value={draft.current} onChange={e => setDraft({ ...draft, current: e.target.value })} /></label>
     <label>下一步<textarea value={draft.next} onChange={e => setDraft({ ...draft, next: e.target.value })} /></label>
     <label>我的草稿<textarea value={draft.draft} onChange={e => setDraft({ ...draft, draft: e.target.value })} /></label>
     <label>進度<input type="range" min="0" max="100" value={draft.progress} onChange={e => setDraft({ ...draft, progress: Number(e.target.value) })} /><span>{draft.progress}%</span></label>
-    <button className="primary full" disabled={!draft.name.trim()} onClick={() => onSave(draft)}>儲存修改</button>
+    <button className="primary full" disabled={!draft.name.trim()} onClick={() => onSave(draft)}>
+      {project.id ? '儲存修改' : '建立專案'}
+    </button>
   </Sheet>
 }
 
