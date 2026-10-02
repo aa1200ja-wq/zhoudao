@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import AssistantSettings from './AssistantSettings'
 import BottomNavOrder from './BottomNavOrder'
+import PwaInstall from './PwaInstall'
 import { DEFAULT_BOTTOM_NAV, DEFAULT_SHORTCUTS, SHORTCUT_OPTIONS, resolveShortcut } from './navigation'
 
 const BACKGROUNDS = [
@@ -66,6 +67,8 @@ export default function Settings({
       onAssistantUpload={onAssistantUpload}
       onAssistantChange={onAssistantChange}
     />
+
+    <PwaInstall />
 
     <details className="settings-card setting-accordion">
       <summary>
