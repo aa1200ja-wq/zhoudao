@@ -56,6 +56,20 @@ export default function App() {
     reload()
   }
 
+  async function setProjectArchived(project, archived) {
+    await db.projects.put({
+      ...project,
+      status: archived ? '已完成' : '進行中',
+      archived,
+      archivedAt: archived ? Date.now() : null,
+      progress: archived ? 100 : project.progress,
+      updatedAt: Date.now(),
+    })
+    await markDirty()
+    setModal(null)
+    reload()
+  }
+
   async function addInbox(text) {
     if (!text.trim()) return
     await db.inbox.add({
@@ -170,7 +184,11 @@ export default function App() {
       </header>
 
       <section className="page">
-        {page === '專案' && <Projects projects={projects} onEdit={setModal} onAdd={() => setModal(EMPTY_PROJECT)} />}
+        {page === '專案' && <Projects
+          projects={projects}
+          onEdit={setModal}
+          onAdd={() => setModal(EMPTY_PROJECT)}
+        />}
         {page === '待辦事項' && <Todo
           items={inbox}
           onAdd={addInbox}
@@ -210,7 +228,12 @@ export default function App() {
       <InnerNav page={page} items={normalizeBottomNav(preferences.bottomNav)} onOpen={setPage} />
     </>}
 
-    {modal && <ProjectModal project={modal} onClose={() => setModal(null)} onSave={saveProject} />}
+    {modal && <ProjectModal
+      project={modal}
+      onClose={() => setModal(null)}
+      onSave={saveProject}
+      onArchive={setProjectArchived}
+    />}
   </main>
 }
 
