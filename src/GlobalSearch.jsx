@@ -49,10 +49,10 @@ export default function GlobalSearch({ projects, inbox, library, onOpenPage, onO
       ]))
       .map(item => ({
         id: 'prompt-' + item.id,
-        type: '提示詞',
+        type: '圖庫',
         title: item.title,
         summary: item.folder || '未整理',
-        action: () => onOpenPage('提示詞'),
+        action: () => onOpenPage('圖庫'),
       }))
 
     return [...projectResults, ...inboxResults, ...promptResults]
@@ -65,14 +65,14 @@ export default function GlobalSearch({ projects, inbox, library, onOpenPage, onO
         autoFocus
         value={query}
         onChange={e => setQuery(e.target.value)}
-        placeholder="搜尋專案、待辦、提示詞、README…"
+        placeholder="搜尋專案、待辦、圖庫、Prompt、README…"
       />
       {query && <button onClick={() => setQuery('')}>×</button>}
     </div>
 
     {!query.trim() ? <div className="search-empty-state">
       <strong>輸入關鍵字</strong>
-      <p>會一起搜尋專案、待辦、提示詞與專案詳細資料。</p>
+      <p>會一起搜尋專案、待辦、圖庫 Prompt 與專案詳細資料。</p>
     </div> : <>
       <div className="search-result-count">{results.length} 筆結果</div>
       {results.length ? <div className="search-result-list">
