@@ -1,0 +1,56 @@
+.nav-order-list {
+  display: grid;
+  gap: 8px;
+}
+
+.nav-order-item {
+  width: 100%;
+  min-height: 52px;
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface-soft);
+  color: var(--text);
+  padding: 8px 11px;
+  text-align: left;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.nav-order-item:active {
+  cursor: grabbing;
+}
+
+.nav-order-item.dragging {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  transform: scale(.99);
+}
+
+.drag-handle {
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.nav-order-item strong {
+  font-size: 14px;
+}
+
+.nav-order-item small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.nav-order-hint {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
