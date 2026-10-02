@@ -61,7 +61,10 @@ export default function App() {
     await db.inbox.add({
       text: text.trim(),
       bucket: 'today',
+      recurring: 'daily',
       completed: false,
+      completedDate: '',
+      skippedDate: '',
       pinned: false,
       updatedAt: Date.now(),
       synced: 0,
