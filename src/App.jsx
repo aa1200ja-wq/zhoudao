@@ -9,38 +9,18 @@ import { Projects, ProjectModal } from './ProjectViews'
 import InnerNav from './InnerNav'
 import Portfolio from './Portfolio'
 import { HomeIcon, SettingsIcon } from './AppIcons'
-import { DEFAULT_BOTTOM_NAV, DEFAULT_SHORTCUTS, normalizeBottomNav } from './navigation'
+import { normalizeBottomNav } from './navigation'
+import { DEFAULT_ASSISTANT, normalizeAssistant } from './assistantConfig'
+import { DEFAULT_PREFS, EMPTY_PROJECT } from './appDefaults'
+import { toDataUrl } from './fileUtils'
 
-const EMPTY_PROJECT = {
-  name: '',
-  status: '進行中',
-  progress: 0,
-  current: '',
-  next: '',
-  draft: '',
-  flowText: '',
-  currentStepDetail: '',
-  currentTask: '',
-  nextDetail: '',
-  architectureText: '',
-  changelogText: '',
-}
-const DEFAULT_PREFS = {
-  darkMode: false,
-  homeBackground: 'cream',
-  backgroundImage: '',
-  shortcuts: DEFAULT_SHORTCUTS,
-  mobilePreview: false,
-  promptFolders: ['真人', '情侶', '商品', '場景', '影片'],
-  bottomNav: DEFAULT_BOTTOM_NAV,
-}
 export default function App() {
   const [page, setPage] = useState('首頁')
   const [projects, setProjects] = useState([])
   const [library, setLibrary] = useState([])
   const [inbox, setInbox] = useState([])
   const [portfolio, setPortfolio] = useState([])
-  const [assistant, setAssistant] = useState({ name: '小周', image: '' })
+  const [assistant, setAssistant] = useState(DEFAULT_ASSISTANT)
   const [preferences, setPreferences] = useState(DEFAULT_PREFS)
   const [pending, setPending] = useState(0)
   const [modal, setModal] = useState(null)
@@ -50,7 +30,7 @@ export default function App() {
     setLibrary(await db.library.orderBy('updatedAt').reverse().toArray())
     setInbox(await db.inbox.orderBy('updatedAt').reverse().toArray())
     setPortfolio(await db.portfolio.orderBy('updatedAt').reverse().toArray())
-    setAssistant((await db.settings.get('assistant')) || { name: '小周', image: '' })
+    setAssistant(normalizeAssistant(await db.settings.get('assistant')))
     const saved = await db.settings.get('preferences')
     setPreferences({
       ...DEFAULT_PREFS,
@@ -144,17 +124,16 @@ export default function App() {
     reload()
   }
 
-  async function uploadAssistant(file) {
-    if (!file) return
-    await db.settings.put({ key: 'assistant', name: assistant.name, image: await toDataUrl(file) })
+  async function updateAssistant(patch) {
+    const next = normalizeAssistant({ ...assistant, ...patch, key: 'assistant' })
+    await db.settings.put(next)
     await markDirty()
     reload()
   }
 
-  async function resetAssistant() {
-    await db.settings.put({ key: 'assistant', name: '小周', image: '' })
-    await markDirty()
-    reload()
+  async function uploadAssistant(file) {
+    if (!file) return
+    await updateAssistant({ image: await toDataUrl(file) })
   }
 
   async function updatePreferences(patch) {
@@ -216,9 +195,10 @@ export default function App() {
         />}
         {page === '設定' && <Settings
           assistant={assistant}
+          projects={projects}
           preferences={preferences}
           onAssistantUpload={uploadAssistant}
-          onAssistantReset={resetAssistant}
+          onAssistantChange={updateAssistant}
           onPreferenceChange={updatePreferences}
           onBackgroundUpload={uploadBackground}
         />}
@@ -231,12 +211,3 @@ export default function App() {
   </main>
 }
 
-
-function toDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(reader.result)
-    reader.onerror = reject
-    reader.readAsDataURL(file)
-  })
-}
