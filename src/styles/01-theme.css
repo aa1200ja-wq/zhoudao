@@ -1,0 +1,41 @@
+:root {
+  font-family: Inter, "Noto Sans TC", system-ui, sans-serif;
+  font-synthesis: none;
+}
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; min-height: 100%; }
+body { min-width: 320px; background: #e9e4dc; }
+button, textarea, input, select { font: inherit; }
+button { color: inherit; -webkit-tap-highlight-color: transparent; }
+img { display: block; max-width: 100%; }
+[hidden] { display: none !important; }
+
+.app-shell {
+  --bg: #f3efe8;
+  --page: #f7f3ed;
+  --surface: #ffffff;
+  --surface-soft: #f4eee7;
+  --text: #26211d;
+  --muted: #6d6258;
+  --border: #e3d9cd;
+  --accent: #ae742f;
+  --accent-soft: #eadbc7;
+  width: min(470px, 100%);
+  min-height: 100dvh;
+  margin: auto;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  position: relative;
+}
+.app-shell.dark {
+  --bg: #11151b;
+  --page: #171b21;
+  --surface: #232831;
+  --surface-soft: #1c2129;
+  --text: #f4f6f8;
+  --muted: #b9c0ca;
+  --border: #39414d;
+  --accent: #d19a55;
+  --accent-soft: #3a2c1e;
+}
