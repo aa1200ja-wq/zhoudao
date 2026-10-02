@@ -1006,3 +1006,59 @@ textarea::placeholder, input::placeholder { color: var(--muted); opacity: .78; }
 .project-edit-detail-body .flow-editor {
   min-height: 150px;
 }
+
+
+/* Project continuation using existing settings accordion UI */
+.project-accordion-stack {
+  display: grid;
+  gap: 12px;
+}
+.project-info-accordion {
+  padding: 0;
+}
+.project-info-accordion summary p {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.project-plus {
+  color: var(--accent);
+  font-size: 20px;
+  font-weight: 500;
+  transition: transform .18s ease;
+  flex: 0 0 auto;
+}
+.project-info-accordion[open] .project-plus,
+.project-edit-detail[open] .project-plus {
+  transform: rotate(45deg);
+}
+.project-info-body {
+  display: grid;
+  gap: 8px;
+}
+.project-info-body p {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.55;
+}
+.project-info-body strong {
+  color: var(--accent);
+}
+.project-flow-section h3 {
+  margin: 0 0 9px;
+  color: var(--text);
+  font-size: 14px;
+}
+.project-flow-section pre {
+  margin: 0;
+  padding: 12px;
+  border-radius: 13px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
