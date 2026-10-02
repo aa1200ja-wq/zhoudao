@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-
-const MENU = ['專案', '收件匣', 'Prompt', '設定']
+import { DEFAULT_SHORTCUTS, RIGHT_ACTIONS, resolveShortcut } from './navigation'
 
 export default function HomeStage({
   assistant,
@@ -8,11 +7,9 @@ export default function HomeStage({
   projects,
   pending,
   onOpenPage,
-  onToggleDark,
 }) {
   const [leftOpen, setLeftOpen] = useState(false)
   const [rightOpen, setRightOpen] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
   const [line, setLine] = useState('')
 
   const message = useMemo(() => {
@@ -32,17 +29,17 @@ export default function HomeStage({
     setLine(project.name + '：' + (project.next || project.current || '先整理下一步。'))
   }
 
-  function closeDrawers() {
-    setLeftOpen(false)
-    setRightOpen(false)
-  }
+  const shortcuts = (preferences.shortcuts?.length === 4
+    ? preferences.shortcuts
+    : DEFAULT_SHORTCUTS).map(resolveShortcut)
 
   const bgStyle = preferences.backgroundImage
-    ? { backgroundImage: 'linear-gradient(rgba(12,14,18,.18),rgba(12,14,18,.32)),url("' + preferences.backgroundImage + '")' }
+    ? { backgroundImage: 'linear-gradient(rgba(12,14,18,.12),rgba(12,14,18,.24)),url("' + preferences.backgroundImage + '")' }
     : undefined
 
   return <section className={'stage home-bg-' + preferences.homeBackground} style={bgStyle}>
     <div className="scene-glass" aria-hidden="true" />
+
     <header className="identity-strip">
       <span>◇</span><b>周到</b><small>{pending ? '待同步 ' + pending : '已儲存'}</small>
     </header>
@@ -51,38 +48,32 @@ export default function HomeStage({
       className="edge-handle edge-left"
       aria-expanded={leftOpen}
       onClick={() => { setLeftOpen(!leftOpen); setRightOpen(false) }}
+      aria-label="展開左側快捷功能"
     >‹</button>
 
-    {leftOpen && <aside className="side-drawer drawer-left">
-      <p className="drawer-kicker">CURRENT</p>
-      <h3>進行中的專案</h3>
-      <div className="drawer-projects">
-        {projects.slice(0, 4).map(project => <button
-          key={project.id}
-          className="drawer-project"
-          onClick={() => { closeDrawers(); onOpenPage('專案', project) }}
-        >
-          <strong>{project.name}</strong>
-          <small>{project.next || project.current || '尚未設定下一步'}</small>
-        </button>)}
-        {!projects.length && <p className="drawer-empty">目前沒有專案。</p>}
-      </div>
-      <button className="drawer-link" onClick={() => onOpenPage('專案')}>查看全部專案</button>
+    {leftOpen && <aside className="icon-rail icon-rail-left">
+      {shortcuts.map((item, index) => <RailAction
+        key={item.id + index}
+        item={item}
+        side="left"
+        onClick={() => onOpenPage(item.page)}
+      />)}
     </aside>}
 
     <button
       className="edge-handle edge-right"
       aria-expanded={rightOpen}
       onClick={() => { setRightOpen(!rightOpen); setLeftOpen(false) }}
+      aria-label="展開右側功能"
     >›</button>
 
-    {rightOpen && <aside className="side-drawer drawer-right">
-      <p className="drawer-kicker">TOOLS</p>
-      <button onClick={onToggleDark}>{preferences.darkMode ? '切換淺色模式' : '切換深色模式'}</button>
-      <button onClick={() => onOpenPage('設定')}>人物／背景設定</button>
-      <button onClick={() => onOpenPage('收件匣')}>快速記錄</button>
-      <button onClick={() => onOpenPage('Prompt')}>Prompt／素材</button>
-      <div className="sync-note">同步 GitHub 尚未啟用</div>
+    {rightOpen && <aside className="icon-rail icon-rail-right">
+      {RIGHT_ACTIONS.map(item => <RailAction
+        key={item.id}
+        item={item}
+        side="right"
+        onClick={() => onOpenPage(item.page)}
+      />)}
     </aside>}
 
     <section className="hero-zone">
@@ -93,27 +84,17 @@ export default function HomeStage({
       </button>
     </section>
 
-    <button className="speech-line" onClick={sayNext}>
-      <span className="speaker-name">{assistant.name || '小周'}</span>
+    <button className="dialogue-layer" onClick={sayNext}>
+      <span className="dialogue-name">{assistant.name || '小周'}</span>
+      <span className="dialogue-rule" />
       <p>{line}</p>
     </button>
-
-    {menuOpen && <nav className="petal-menu" aria-label="主要功能">
-      {MENU.map((item, index) => <button
-        key={item}
-        className={'petal petal-' + index}
-        onClick={() => { setMenuOpen(false); onOpenPage(item) }}
-      >{item}</button>)}
-    </nav>}
-
-    <button
-      className="core-button"
-      aria-expanded={menuOpen}
-      onClick={() => setMenuOpen(!menuOpen)}
-      aria-label="展開功能"
-    >
-      <span className="core-ring" />
-      <span className="core-diamond">◇</span>
-    </button>
   </section>
+}
+
+function RailAction({ item, side, onClick }) {
+  return <button className={'rail-item rail-' + side} onClick={onClick}>
+    <span className="rail-icon">{item.icon}</span>
+    <small>{item.label}</small>
+  </button>
 }
