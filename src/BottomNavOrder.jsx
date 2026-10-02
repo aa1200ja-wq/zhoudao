@@ -1,16 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { normalizeBottomNav, resolveBottomNav } from './navigation'
 
 export default function BottomNavOrder({ items, onChange }) {
+  const [order, setOrder] = useState(() => normalizeBottomNav(items))
   const [dragIndex, setDragIndex] = useState(null)
-  const ordered = normalizeBottomNav(items)
+
+  useEffect(() => {
+    if (dragIndex == null) setOrder(normalizeBottomNav(items))
+  }, [items, dragIndex])
 
   function move(from, to) {
     if (from === to || from == null || to == null) return
-    const next = [...ordered]
-    const [moved] = next.splice(from, 1)
-    next.splice(to, 0, moved)
-    onChange(next)
+    setOrder(current => {
+      const next = [...current]
+      const [moved] = next.splice(from, 1)
+      next.splice(to, 0, moved)
+      return next
+    })
     setDragIndex(to)
   }
 
@@ -23,8 +29,13 @@ export default function BottomNavOrder({ items, onChange }) {
     move(dragIndex, Number(target.dataset.navIndex))
   }
 
+  function finishDrag() {
+    if (dragIndex != null) onChange(order)
+    setDragIndex(null)
+  }
+
   return <div className="nav-order-list">
-    {ordered.map((page, index) => {
+    {order.map((page, index) => {
       const nav = resolveBottomNav(page)
       return <button
         key={page}
@@ -36,7 +47,7 @@ export default function BottomNavOrder({ items, onChange }) {
           event.currentTarget.setPointerCapture(event.pointerId)
         }}
         onPointerMove={pointerMove}
-        onPointerUp={() => setDragIndex(null)}
+        onPointerUp={finishDrag}
         onPointerCancel={() => setDragIndex(null)}
       >
         <span className="drag-handle">≡</span>
