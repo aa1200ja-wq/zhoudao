@@ -1,0 +1,113 @@
+/* Project continuation using existing settings accordion UI */
+.project-accordion-stack {
+  display: grid;
+  gap: 12px;
+}
+.project-info-accordion {
+  padding: 0;
+}
+.project-info-accordion summary p {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.project-plus {
+  color: var(--accent);
+  font-size: 20px;
+  font-weight: 500;
+  transition: transform .18s ease;
+  flex: 0 0 auto;
+}
+.project-info-accordion[open] .project-plus,
+.project-edit-detail[open] .project-plus {
+  transform: rotate(45deg);
+}
+.project-info-body {
+  display: grid;
+  gap: 8px;
+}
+.project-info-body p {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.55;
+}
+.project-info-body strong {
+  color: var(--accent);
+}
+.project-flow-section h3 {
+  margin: 0 0 9px;
+  color: var(--text);
+  font-size: 14px;
+}
+.project-flow-section pre {
+  margin: 0;
+  padding: 12px;
+  border-radius: 13px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+
+/* Project accordion chevrons match settings */
+.project-info-accordion[open] .accordion-chevron,
+.project-edit-detail[open] .accordion-chevron {
+  transform: rotate(180deg);
+}
+
+
+/* README-like project details */
+.project-readme-section {
+  display: grid;
+  gap: 8px;
+}
+.project-readme-section + .project-readme-section {
+  margin-top: 10px;
+}
+.project-readme-section h3 {
+  margin: 0;
+  color: var(--accent);
+  font-size: 13px;
+}
+.project-readme-section pre {
+  margin: 0;
+  padding: 12px;
+  border-radius: 13px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.project-edit-detail-body .readme-editor {
+  min-height: 180px;
+}
+
+
+/* Project card hierarchy: field label small, summary value large */
+.project-info-accordion summary strong {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  line-height: 1.2;
+}
+.project-info-accordion summary p {
+  max-width: 300px;
+  margin: 6px 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.3;
+}
