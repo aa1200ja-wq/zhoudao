@@ -2,6 +2,7 @@ import Dexie from 'dexie'
 import { starterProjects, starterPrompts } from './data'
 import { DEFAULT_SHORTCUTS } from './navigation'
 import { DEFAULT_ASSISTANT } from './assistantConfig'
+import { DEMO_HOME_IMAGE, demoGallery, demoPortfolio } from './demoData'
 
 export const db = new Dexie('zhoudao-db')
 
@@ -35,6 +36,25 @@ export async function seedDb() {
       shortcuts: DEFAULT_SHORTCUTS,
       mobilePreview: false,
     })
+  }
+
+  const demoSeed = await db.settings.get('demoSeed')
+  if (!demoSeed?.v1) {
+    for (const item of demoGallery) {
+      if (!(await db.library.get(item.id))) await db.library.put(item)
+    }
+    for (const item of demoPortfolio) {
+      if (!(await db.portfolio.get(item.id))) {
+        await db.portfolio.put({ ...item, updatedAt: Date.now() })
+      }
+    }
+
+    const assistant = (await db.settings.get('assistant')) || DEFAULT_ASSISTANT
+    if (!assistant.image) {
+      await db.settings.put({ ...assistant, image: DEMO_HOME_IMAGE })
+    }
+
+    await db.settings.put({ key: 'demoSeed', v1: true, updatedAt: Date.now() })
   }
 }
 
