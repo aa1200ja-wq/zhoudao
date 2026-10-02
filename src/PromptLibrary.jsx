@@ -77,6 +77,11 @@ export default function PromptLibrary({
       <button className="prompt-add" onClick={() => setEditing(emptyPrompt('未整理'))}>＋</button>
     </div>
 
+    <div className="prompt-folder-actions">
+      <button className="folder-add-visible" onClick={addFolder}>＋ 新增資料夾</button>
+      <button className="folder-manage-visible" onClick={() => setShowFolderManager(true)}>管理資料夾</button>
+    </div>
+
     <div className="folder-strip">
       {SPECIAL_FILTERS.map(item => <button
         key={item.id}
@@ -88,8 +93,6 @@ export default function PromptLibrary({
         className={filter === folder ? 'active' : ''}
         onClick={() => setFilter(folder)}
       >{folder}</button>)}
-      <button className="folder-add" onClick={addFolder}>＋資料夾</button>
-      <button className="folder-manage" onClick={() => setShowFolderManager(true)}>管理</button>
     </div>
 
     <div className="prompt-summary">
