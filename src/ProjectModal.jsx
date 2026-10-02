@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export function ProjectModal({ project, onClose, onSave }) {
+export function ProjectModal({ project, onClose, onSave, onArchive }) {
   const [editing, setEditing] = useState(!project.id)
   const [draft, setDraft] = useState(project)
 
@@ -68,7 +68,15 @@ export function ProjectModal({ project, onClose, onSave }) {
         </ProjectInfoAccordion>
       </div>
 
-      <button className="secondary full" onClick={() => setEditing(true)}>編輯專案資料</button>
+      <div className="project-modal-actions">
+        <button className="secondary full" onClick={() => setEditing(true)}>編輯專案資料</button>
+        <button
+          className={isArchived(project) ? 'secondary full' : 'primary full'}
+          onClick={() => onArchive(project, !isArchived(project))}
+        >
+          {isArchived(project) ? '恢復進行中' : '標記完成並封存'}
+        </button>
+      </div>
     </Sheet>
   }
 
@@ -164,6 +172,12 @@ function buildFallbackFlow(project) {
   ].join('\n')
 }
 
+
+function isArchived(project) {
+  return Boolean(project.archived)
+    || String(project.status || '').includes('完成')
+    || String(project.status || '').includes('封存')
+}
 
 function formatTime(value) {
   return new Date(value).toLocaleString('zh-TW', {
