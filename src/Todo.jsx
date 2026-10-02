@@ -4,26 +4,54 @@ export default function Todo({ items, onAdd, onUpdate, onDelete, onConvert }) {
   const [text, setText] = useState('')
   const [tab, setTab] = useState('today')
   const [menuId, setMenuId] = useState(null)
+  const today = dateKey()
 
   const normalized = items.map(item => ({
     ...item,
-    bucket: item.bucket || 'today',
-    completed: Boolean(item.completed),
     pinned: Boolean(item.pinned),
+    completedToday: isCompletedToday(item, today),
+    skippedToday: isSkippedToday(item, today),
   }))
 
   const visible = normalized
     .filter(item => {
-      if (tab === 'completed') return item.completed
-      if (item.completed) return false
-      return item.bucket === tab
+      if (tab === 'completed') return item.completedToday
+      if (tab === 'skipped') return item.skippedToday
+      return !item.completedToday && !item.skippedToday
     })
     .sort((a, b) => Number(b.pinned) - Number(a.pinned) || b.updatedAt - a.updatedAt)
 
   const counts = {
-    today: normalized.filter(item => !item.completed && item.bucket === 'today').length,
-    later: normalized.filter(item => !item.completed && item.bucket === 'later').length,
-    completed: normalized.filter(item => item.completed).length,
+    today: normalized.filter(item => !item.completedToday && !item.skippedToday).length,
+    skipped: normalized.filter(item => item.skippedToday).length,
+    completed: normalized.filter(item => item.completedToday).length,
+  }
+
+  function complete(item) {
+    onUpdate(item, {
+      completed: true,
+      completedDate: today,
+      skippedDate: '',
+      bucket: 'today',
+    })
+  }
+
+  function skipToday(item) {
+    onUpdate(item, {
+      completed: false,
+      completedDate: '',
+      skippedDate: today,
+      bucket: 'today',
+    })
+  }
+
+  function restoreToday(item) {
+    onUpdate(item, {
+      completed: false,
+      completedDate: '',
+      skippedDate: '',
+      bucket: 'today',
+    })
   }
 
   return <div className="todo-page">
@@ -31,21 +59,21 @@ export default function Todo({ items, onAdd, onUpdate, onDelete, onConvert }) {
       <textarea
         value={text}
         onChange={e => setText(e.target.value)}
-        placeholder="記點子、提醒自己，或寫下接下來要做的事…"
+        placeholder="新增每天都要提醒自己的事…"
       />
       <button onClick={() => {
         onAdd(text)
         setText('')
         setTab('today')
-      }}>存進待辦事項</button>
+      }}>新增每日事項</button>
     </div>
 
     <div className="todo-tabs">
       <button className={tab === 'today' ? 'active' : ''} onClick={() => setTab('today')}>
         今天 <span>{counts.today}</span>
       </button>
-      <button className={tab === 'later' ? 'active' : ''} onClick={() => setTab('later')}>
-        之後 <span>{counts.later}</span>
+      <button className={tab === 'skipped' ? 'active' : ''} onClick={() => setTab('skipped')}>
+        今天不用 <span>{counts.skipped}</span>
       </button>
       <button className={tab === 'completed' ? 'active' : ''} onClick={() => setTab('completed')}>
         完成 <span>{counts.completed}</span>
@@ -53,59 +81,76 @@ export default function Todo({ items, onAdd, onUpdate, onDelete, onConvert }) {
     </div>
 
     {visible.length ? <div className="todo-list">
-      {visible.map(item => <article className={'todo-item ' + (item.completed ? 'done' : '')} key={item.id}>
+      {visible.map(item => <article
+        className={'todo-item ' + (item.completedToday ? 'done' : '')}
+        key={item.id}
+      >
         <button
-          className={'todo-check ' + (item.completed ? 'checked' : '')}
-          onClick={() => onUpdate(item, { completed: !item.completed })}
-          aria-label={item.completed ? '標記未完成' : '標記完成'}
-        >{item.completed ? '✓' : ''}</button>
+          className={'todo-check ' + (item.completedToday ? 'checked' : '')}
+          onClick={() => item.completedToday ? restoreToday(item) : complete(item)}
+          aria-label={item.completedToday ? '恢復到今天' : '標記今天完成'}
+        >{item.completedToday ? '✓' : ''}</button>
 
         <button className="todo-main" onClick={() => setMenuId(menuId === item.id ? null : item.id)}>
           <div className="todo-text-row">
             <p>{item.text}</p>
             {item.pinned && <span className="todo-pin">置頂</span>}
           </div>
-          <small>{item.completed ? '已完成' : item.bucket === 'later' ? '之後' : '今天'} · {formatTime(item.updatedAt)}</small>
+          <small>{item.completedToday ? '今天已完成' : item.skippedToday ? '今天不用' : '每日事項'}</small>
         </button>
 
         <button className="todo-more" onClick={() => setMenuId(menuId === item.id ? null : item.id)}>⋯</button>
 
         {menuId === item.id && <div className="todo-menu">
-          {!item.completed && <button onClick={() => {
-            onUpdate(item, { bucket: item.bucket === 'today' ? 'later' : 'today' })
+          {!item.completedToday && !item.skippedToday && <button onClick={() => {
+            skipToday(item)
             setMenuId(null)
-          }}>{item.bucket === 'today' ? '移到之後' : '移到今天'}</button>}
+          }}>今天不用</button>}
+          {(item.completedToday || item.skippedToday) && <button onClick={() => {
+            restoreToday(item)
+            setMenuId(null)
+          }}>恢復到今天</button>}
           <button onClick={() => {
             onUpdate(item, { pinned: !item.pinned })
             setMenuId(null)
           }}>{item.pinned ? '取消置頂' : '置頂'}</button>
-          {!item.completed && <button onClick={() => {
+          {!item.completedToday && <button onClick={() => {
             onConvert(item)
             setMenuId(null)
           }}>轉成專案</button>}
-          {item.completed && <button onClick={() => {
-            onUpdate(item, { completed: false, bucket: 'today' })
-            setMenuId(null)
-          }}>恢復到今天</button>}
           <button className="danger" onClick={() => {
             onDelete(item.id)
             setMenuId(null)
-          }}>刪除</button>
+          }}>刪除每日事項</button>
         </div>}
       </article>)}
     </div> : <div className="todo-empty">
-      <strong>{tab === 'today' ? '今天沒有待辦' : tab === 'later' ? '之後沒有待辦' : '還沒有完成項目'}</strong>
-      <p>{tab === 'today' ? '有想到什麼就直接記一句。' : '這裡會保持乾淨。'}</p>
+      <strong>{emptyTitle(tab)}</strong>
+      <p>{tab === 'today' ? '今天的每日事項都處理完了。' : '隔天會自動重新回到「今天」。'}</p>
     </div>}
   </div>
 }
 
+function isCompletedToday(item, today) {
+  if (item.completedDate) return item.completedDate === today
+  return Boolean(item.completed) && dateKey(item.updatedAt) === today
+}
 
-function formatTime(value) {
-  return new Date(value).toLocaleString('zh-TW', {
-    month: 'numeric',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+function isSkippedToday(item, today) {
+  if (item.skippedDate) return item.skippedDate === today
+  return item.bucket === 'later' && dateKey(item.updatedAt) === today
+}
+
+function dateKey(value = Date.now()) {
+  const date = new Date(value)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+function emptyTitle(tab) {
+  if (tab === 'skipped') return '今天沒有略過項目'
+  if (tab === 'completed') return '今天還沒有完成項目'
+  return '今天沒有待辦'
 }
