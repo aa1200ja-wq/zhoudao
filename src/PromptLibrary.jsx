@@ -15,6 +15,7 @@ export default function PromptLibrary({
   onFoldersChange,
 }) {
   const [query, setQuery] = useState('')
+  const [searchOpen, setSearchOpen] = useState(false)
   const [filter, setFilter] = useState('all')
   const [selected, setSelected] = useState(null)
   const [editing, setEditing] = useState(null)
@@ -56,31 +57,26 @@ export default function PromptLibrary({
     setSelected(next)
   }
 
-  function addFolder() {
-    const name = window.prompt('新資料夾名稱')
-    const clean = name?.trim()
-    if (!clean || folderList.includes(clean)) return
-    onFoldersChange([...folderList, clean])
-    setFilter(clean)
-  }
-
   return <div className="prompt-library">
-    <div className="prompt-toolbar">
-      <div className="prompt-search">
-        <span>⌕</span>
-        <input
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          placeholder="搜尋名稱、Prompt、標籤…"
-        />
-      </div>
-      <button className="prompt-add" onClick={() => setEditing(emptyPrompt('未整理'))}>＋</button>
+    <div className="prompt-primary-actions">
+      <button
+        className={searchOpen ? 'active' : ''}
+        onClick={() => setSearchOpen(!searchOpen)}
+      >⌕ 搜尋</button>
+      <button className="primary-action" onClick={() => setEditing(emptyPrompt('未整理'))}>＋ 新增</button>
+      <button onClick={() => setShowFolderManager(true)}>▣ 資料夾</button>
     </div>
 
-    <div className="prompt-folder-actions">
-      <button className="folder-add-visible" onClick={addFolder}>＋ 新增資料夾</button>
-      <button className="folder-manage-visible" onClick={() => setShowFolderManager(true)}>管理資料夾</button>
-    </div>
+    {searchOpen && <div className="prompt-search prompt-search-expanded">
+      <span>⌕</span>
+      <input
+        autoFocus
+        value={query}
+        onChange={e => setQuery(e.target.value)}
+        placeholder="搜尋名稱、Prompt、標籤…"
+      />
+      {query && <button className="search-clear" onClick={() => setQuery('')}>×</button>}
+    </div>}
 
     <div className="folder-strip">
       {SPECIAL_FILTERS.map(item => <button
