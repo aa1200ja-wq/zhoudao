@@ -1,0 +1,56 @@
+.project-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.project-tabs button {
+  min-height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.project-tabs button.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.project-tabs span {
+  margin-left: 4px;
+  font-size: var(--type-secondary);
+}
+
+.project-list-section {
+  margin-top: 14px;
+}
+
+.project-empty {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.project-empty strong {
+  color: var(--text);
+  font-size: var(--type-card-title);
+}
+
+.project-empty p {
+  margin: 0;
+  font-size: var(--type-secondary);
+}
+
+.project-modal-actions {
+  display: grid;
+  gap: 9px;
+}
