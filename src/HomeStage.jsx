@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { DEFAULT_SHORTCUTS, RIGHT_ACTIONS, resolveShortcut } from './navigation'
+import { HomeIcon, SettingsIcon } from './AppIcons'
 
 export default function HomeStage({
   assistant,
@@ -39,6 +40,13 @@ export default function HomeStage({
 
   return <section className={'stage home-bg-' + preferences.homeBackground} style={bgStyle}>
     <div className="scene-glass" aria-hidden="true" />
+
+    <button className="home-corner-button home-corner-left active" onClick={() => onOpenPage('首頁')} aria-label="首頁">
+      <HomeIcon />
+    </button>
+    <button className="home-corner-button home-corner-right" onClick={() => onOpenPage('設定')} aria-label="設定">
+      <SettingsIcon />
+    </button>
 
     <header className="identity-strip">
       <span>◇</span><b>周到</b><small>{pending ? '待同步 ' + pending : '已儲存'}</small>
