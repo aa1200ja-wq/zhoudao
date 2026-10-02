@@ -2,8 +2,16 @@ import { useEffect, useState } from 'react'
 import { db, markDirty, pendingCount, seedDb } from './db'
 import HomeStage from './HomeStage'
 import Settings from './Settings'
+import { DEFAULT_SHORTCUTS } from './navigation'
 
 const EMPTY_PROJECT = { name: '', status: '進行中', progress: 0, current: '', next: '', draft: '' }
+const DEFAULT_PREFS = {
+  darkMode: false,
+  homeBackground: 'cream',
+  backgroundImage: '',
+  shortcuts: DEFAULT_SHORTCUTS,
+}
+const NAV_ITEMS = ['首頁', '待辦事項', '專案', '提示詞', '設定']
 
 export default function App() {
   const [page, setPage] = useState('首頁')
@@ -11,7 +19,7 @@ export default function App() {
   const [library, setLibrary] = useState([])
   const [inbox, setInbox] = useState([])
   const [assistant, setAssistant] = useState({ name: '小周', image: '' })
-  const [preferences, setPreferences] = useState({ darkMode: false, homeBackground: 'cream', backgroundImage: '' })
+  const [preferences, setPreferences] = useState(DEFAULT_PREFS)
   const [pending, setPending] = useState(0)
   const [modal, setModal] = useState(null)
 
@@ -20,7 +28,8 @@ export default function App() {
     setLibrary(await db.library.orderBy('updatedAt').reverse().toArray())
     setInbox(await db.inbox.orderBy('updatedAt').reverse().toArray())
     setAssistant((await db.settings.get('assistant')) || { name: '小周', image: '' })
-    setPreferences((await db.settings.get('preferences')) || { darkMode: false, homeBackground: 'cream', backgroundImage: '' })
+    const saved = await db.settings.get('preferences')
+    setPreferences({ ...DEFAULT_PREFS, ...(saved || {}), shortcuts: saved?.shortcuts?.length === 4 ? saved.shortcuts : DEFAULT_SHORTCUTS })
     setPending(await pendingCount())
   }
 
@@ -65,7 +74,8 @@ export default function App() {
   }
 
   async function updatePreferences(patch) {
-    await db.settings.put({ ...preferences, ...patch, key: 'preferences' })
+    const next = { ...preferences, ...patch, key: 'preferences' }
+    await db.settings.put(next)
     await markDirty()
     reload()
   }
@@ -82,17 +92,17 @@ export default function App() {
       projects={projects}
       pending={pending}
       onOpenPage={openPage}
-      onToggleDark={() => updatePreferences({ darkMode: !preferences.darkMode })}
     /> : <>
       <header className="page-header">
         <button className="back-button" onClick={() => setPage('首頁')}>‹</button>
         <div><p>周到</p><h1>{page}</h1></div>
         <span className="sync-chip">待同步 {pending}</span>
       </header>
+
       <section className="page">
         {page === '專案' && <Projects projects={projects} onEdit={setModal} onAdd={() => setModal(EMPTY_PROJECT)} />}
-        {page === '收件匣' && <Inbox items={inbox} onAdd={addInbox} />}
-        {page === 'Prompt' && <Library items={library} onAdd={addLibrary} />}
+        {page === '待辦事項' && <Todo items={inbox} onAdd={addInbox} />}
+        {page === '提示詞' && <Library items={library} onAdd={addLibrary} />}
         {page === '設定' && <Settings
           assistant={assistant}
           preferences={preferences}
@@ -102,10 +112,22 @@ export default function App() {
           onBackgroundUpload={uploadBackground}
         />}
       </section>
+
+      <InnerNav page={page} onOpen={setPage} />
     </>}
 
     {modal && <ProjectModal project={modal} onClose={() => setModal(null)} onSave={saveProject} />}
   </main>
+}
+
+function InnerNav({ page, onOpen }) {
+  return <nav className="inner-nav">
+    {NAV_ITEMS.map(item => <button
+      key={item}
+      className={page === item ? 'active' : ''}
+      onClick={() => onOpen(item)}
+    >{item}</button>)}
+  </nav>
 }
 
 function Projects({ projects, onEdit, onAdd }) {
@@ -124,12 +146,12 @@ function ProjectCard({ project, onEdit }) {
   </button>
 }
 
-function Inbox({ items, onAdd }) {
+function Todo({ items, onAdd }) {
   const [text, setText] = useState('')
   return <>
     <div className="composer">
-      <textarea value={text} onChange={e => setText(e.target.value)} placeholder="先亂寫沒關係，之後再整理…" />
-      <button onClick={() => { onAdd(text); setText('') }}>存進收件匣</button>
+      <textarea value={text} onChange={e => setText(e.target.value)} placeholder="記點子、提醒自己，或寫下接下來要做的事…" />
+      <button onClick={() => { onAdd(text); setText('') }}>存進待辦事項</button>
     </div>
     <Section title="最近記錄">{items.map(item => <article className="card" key={item.id}>
       <p>{item.text}</p><small>{formatTime(item.updatedAt)}</small>
@@ -140,8 +162,8 @@ function Inbox({ items, onAdd }) {
 function Library({ items, onAdd }) {
   const [showAdd, setShowAdd] = useState(false)
   return <>
-    <button className="add-card" onClick={() => setShowAdd(true)}>＋ 新增 Prompt／素材</button>
-    <Section title="Prompt／素材">{items.map(item => <article className="card" key={item.id}>
+    <button className="add-card" onClick={() => setShowAdd(true)}>＋ 新增提示詞／素材</button>
+    <Section title="提示詞／素材">{items.map(item => <article className="card" key={item.id}>
       {item.image && <img className="library-image" src={item.image} alt="素材預覽" />}
       <div className="row"><strong>{item.title}</strong><span>{item.type}</span></div>
       <p>{item.content}</p>
@@ -170,9 +192,9 @@ function ProjectModal({ project, onClose, onSave }) {
 function LibraryModal({ onClose, onSave }) {
   const [draft, setDraft] = useState({ title: '', type: 'Prompt', content: '', tags: '', image: '' })
   async function chooseImage(file) { if (file) setDraft({ ...draft, image: await toDataUrl(file) }) }
-  return <Sheet title="新增 Prompt／素材" onClose={onClose}>
+  return <Sheet title="新增提示詞／素材" onClose={onClose}>
     <label>名稱<input value={draft.title} onChange={e => setDraft({ ...draft, title: e.target.value })} /></label>
-    <label>Prompt／備註<textarea value={draft.content} onChange={e => setDraft({ ...draft, content: e.target.value })} /></label>
+    <label>提示詞／備註<textarea value={draft.content} onChange={e => setDraft({ ...draft, content: e.target.value })} /></label>
     <label>標籤（逗號分隔）<input value={draft.tags} onChange={e => setDraft({ ...draft, tags: e.target.value })} /></label>
     <label className="upload">選擇圖片<input type="file" accept="image/*" onChange={e => chooseImage(e.target.files?.[0])} /></label>
     {draft.image && <img className="preview" src={draft.image} alt="預覽" />}
