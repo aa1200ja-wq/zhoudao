@@ -11,6 +11,14 @@ db.version(1).stores({
   settings: 'key',
 })
 
+db.version(2).stores({
+  projects: 'id, status, updatedAt',
+  library: 'id, type, updatedAt',
+  inbox: '++id, updatedAt, synced',
+  settings: 'key',
+  portfolio: 'id, updatedAt',
+})
+
 export async function seedDb() {
   if ((await db.projects.count()) === 0) await db.projects.bulkAdd(starterProjects)
   if ((await db.library.count()) === 0) await db.library.bulkAdd(starterPrompts)
