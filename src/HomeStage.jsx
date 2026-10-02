@@ -10,24 +10,50 @@ export default function HomeStage({
 }) {
   const [leftOpen, setLeftOpen] = useState(false)
   const [rightOpen, setRightOpen] = useState(false)
-  const [line, setLine] = useState('')
+  const [lineIndex, setLineIndex] = useState(0)
 
-  const message = useMemo(() => {
-    if (pending > 0) return '目前有 ' + pending + ' 項待同步。'
-    const next = projects[0]?.next
-    return next ? '下一步：' + next : '今天想先記下什麼？'
-  }, [pending, projects])
+  const activeProject = useMemo(() => {
+    if (assistant.activeProjectId) {
+      const selected = projects.find(project => project.id === assistant.activeProjectId)
+      if (selected) return selected
+    }
 
-  useEffect(() => setLine(message), [message])
+    return projects.find(project => !isCompleted(project)) || projects[0] || null
+  }, [assistant.activeProjectId, projects])
+
+  const dialogueLines = useMemo(() => {
+    const lines = []
+
+    if (assistant.dynamicDialogue && activeProject) {
+      if (activeProject.current) {
+        lines.push(activeProject.name + '：目前 ' + activeProject.current)
+      }
+      if (activeProject.currentTask) {
+        lines.push(activeProject.name + '：這次要做 ' + activeProject.currentTask)
+      }
+      if (activeProject.next) {
+        lines.push(activeProject.name + '：下一步 ' + activeProject.next)
+      }
+    }
+
+    if (pending > 0) {
+      lines.push('目前有 ' + pending + ' 項待同步。')
+    }
+
+    lines.push(...(assistant.customLines || []))
+
+    return lines.length
+      ? lines
+      : ['今天想先做什麼？']
+  }, [assistant.customLines, assistant.dynamicDialogue, activeProject, pending])
+
+  useEffect(() => setLineIndex(0), [dialogueLines])
 
   function sayNext() {
-    if (!projects.length) {
-      setLine('有想法就先記下來，我幫你留著。')
-      return
-    }
-    const project = projects[Math.floor(Math.random() * projects.length)]
-    setLine(project.name + '：' + (project.next || project.current || '先整理下一步。'))
+    setLineIndex(index => (index + 1) % dialogueLines.length)
   }
+
+  const line = dialogueLines[lineIndex % dialogueLines.length]
 
   const shortcuts = (preferences.shortcuts?.length === 4
     ? preferences.shortcuts
@@ -81,7 +107,7 @@ export default function HomeStage({
       <button className="hero-button" onClick={sayNext} aria-label="點擊小助手">
         {assistant.image
           ? <img className="hero-image" src={assistant.image} alt="小助手" />
-          : <div className="hero-placeholder"><span>小周</span><small>到設定放入首頁人物</small></div>}
+          : <div className="hero-placeholder"><span>{assistant.name || '小周'}</span><small>到設定放入首頁人物</small></div>}
       </button>
     </section>
 
@@ -98,4 +124,9 @@ function RailAction({ item, side, onClick }) {
     <span className="rail-icon">{item.icon}</span>
     <small>{item.label}</small>
   </button>
+}
+
+function isCompleted(project) {
+  const status = String(project?.status || '')
+  return status.includes('完成') || status.includes('結案')
 }
