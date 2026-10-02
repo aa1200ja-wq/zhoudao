@@ -1,0 +1,130 @@
+/* Mobile readability overrides */
+@media (max-width: 620px) {
+  .app-shell {
+    font-size: 16px;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font-size: 15px;
+  }
+
+  .page-header p { font-size: 12px; }
+  .page-header h1 { font-size: 28px; }
+  .section h2 { font-size: 20px; }
+  .row span { font-size: 13px; }
+
+  .card p,
+  .settings-card p {
+    font-size: 15px;
+  }
+
+  .card small,
+  .modal label {
+    font-size: 13px;
+  }
+
+  .inner-nav button {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .setting-accordion summary strong { font-size: 16px; }
+  .setting-accordion summary p { font-size: 14px; }
+  .shortcut-select { font-size: 14px; }
+
+  .assistant-field { font-size: 14px; }
+  .assistant-field small { font-size: 12px; }
+
+  .nav-order-item strong { font-size: 15px; }
+  .nav-order-item small,
+  .nav-order-hint { font-size: 12px; }
+
+  .identity-strip { font-size: 12px; }
+  .dialogue-name { font-size: 14px; }
+  .dialogue-layer p { font-size: 18px; }
+  .rail-item small { font-size: 12px; }
+
+  .folder-strip button { font-size: 14px; }
+  .prompt-summary span { font-size: 18px; }
+  .prompt-summary small { font-size: 13px; }
+  .prompt-tile-copy strong { font-size: 16px; }
+  .prompt-tile-copy > small { font-size: 12px; }
+  .prompt-tile-tags em,
+  .prompt-detail-tags em { font-size: 11px; }
+  .verified-badge { font-size: 11px; }
+  .prompt-empty p { font-size: 14px; }
+
+  .prompt-detail-meta > span { font-size: 13px; }
+  .prompt-detail-meta button,
+  .editor-checks button { font-size: 13px; }
+  .prompt-copy-block small,
+  .prompt-note small { font-size: 11px; }
+  .prompt-copy-block p,
+  .prompt-note p { font-size: 15px; }
+
+  .project-status { font-size: 12px; }
+  .project-resume-head strong { font-size: 15px; }
+  .project-resume-summary small,
+  .project-detail-body small { font-size: 12px; }
+  .project-resume-summary p,
+  .project-detail-body p { font-size: 16px; }
+  .project-index-label { font-size: 13px; }
+  .project-index-row p { font-size: 18px; }
+  .project-full-detail-body pre { font-size: 14px; }
+
+  .global-search-box input { font-size: 15px; }
+  .search-empty-state strong { font-size: 18px; }
+  .search-empty-state p,
+  .search-result-count { font-size: 14px; }
+  .search-result-card > span { font-size: 12px; }
+  .search-result-card strong { font-size: 16px; }
+  .search-result-card small { font-size: 13px; }
+
+  .todo-tabs button { font-size: 14px; }
+  .todo-tabs span { font-size: 12px; }
+  .todo-main p { font-size: 16px; }
+  .todo-main small { font-size: 12px; }
+  .todo-pin { font-size: 11px; }
+  .todo-menu button { font-size: 14px; }
+  .todo-empty strong { font-size: 18px; }
+  .todo-empty p { font-size: 14px; }
+
+  .portfolio-toolbar strong { font-size: 18px; }
+  .portfolio-toolbar p { font-size: 14px; }
+  .portfolio-copy strong { font-size: 15px; }
+  .portfolio-copy small { font-size: 12px; }
+  .portfolio-actions button { font-size: 13px; }
+  .portfolio-empty strong { font-size: 18px; }
+  .portfolio-empty p { font-size: 14px; }
+
+  .gallery-viewer-header small { font-size: 12px; }
+  .gallery-viewer-header h2 { font-size: 20px; }
+  .gallery-details summary { font-size: 16px; }
+  .gallery-no-image p { font-size: 14px; }
+}
+
+/* Desktop phone-preview should use the same readable type scale. */
+@media (min-width: 621px) {
+  .app-shell.preview-mobile button,
+  .app-shell.preview-mobile input,
+  .app-shell.preview-mobile textarea,
+  .app-shell.preview-mobile select {
+    font-size: 15px;
+  }
+
+  .app-shell.preview-mobile .inner-nav button { font-size: 13px; }
+  .app-shell.preview-mobile .setting-accordion summary strong { font-size: 16px; }
+  .app-shell.preview-mobile .setting-accordion summary p { font-size: 14px; }
+  .app-shell.preview-mobile .dialogue-name { font-size: 14px; }
+  .app-shell.preview-mobile .dialogue-layer p { font-size: 18px; }
+  .app-shell.preview-mobile .rail-item small { font-size: 12px; }
+  .app-shell.preview-mobile .prompt-tile-copy strong { font-size: 16px; }
+  .app-shell.preview-mobile .prompt-tile-copy > small { font-size: 12px; }
+  .app-shell.preview-mobile .todo-main p { font-size: 16px; }
+  .app-shell.preview-mobile .todo-main small { font-size: 12px; }
+  .app-shell.preview-mobile .portfolio-copy strong { font-size: 15px; }
+  .app-shell.preview-mobile .portfolio-copy small { font-size: 12px; }
+}
