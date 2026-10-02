@@ -6,9 +6,10 @@ import PromptLibrary from './PromptLibrary'
 import GlobalSearch from './GlobalSearch'
 import Todo from './Todo'
 import { Projects, ProjectModal } from './ProjectViews'
+import InnerNav from './InnerNav'
 import Portfolio from './Portfolio'
 import { HomeIcon, SettingsIcon } from './AppIcons'
-import { DEFAULT_BOTTOM_NAV, DEFAULT_SHORTCUTS, normalizeBottomNav, resolveBottomNav } from './navigation'
+import { DEFAULT_BOTTOM_NAV, DEFAULT_SHORTCUTS, normalizeBottomNav } from './navigation'
 
 const EMPTY_PROJECT = {
   name: '',
@@ -229,20 +230,6 @@ export default function App() {
     {modal && <ProjectModal project={modal} onClose={() => setModal(null)} onSave={saveProject} />}
   </main>
 }
-
-function InnerNav({ page, items, onOpen }) {
-  return <nav className="inner-nav">
-    {items.map(item => {
-      const nav = resolveBottomNav(item)
-      return <button
-        key={nav.page}
-        className={page === nav.page ? 'active' : ''}
-        onClick={() => onOpen(nav.page)}
-      >{nav.label}</button>
-    })}
-  </nav>
-}
-
 
 
 function toDataUrl(file) {
