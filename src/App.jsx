@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { db, markDirty, pendingCount, seedDb } from './db'
 import HomeStage from './HomeStage'
 import Settings from './Settings'
+import PromptLibrary from './PromptLibrary'
 import { DEFAULT_SHORTCUTS } from './navigation'
 
 const EMPTY_PROJECT = { name: '', status: '進行中', progress: 0, current: '', next: '', draft: '' }
@@ -11,6 +12,7 @@ const DEFAULT_PREFS = {
   backgroundImage: '',
   shortcuts: DEFAULT_SHORTCUTS,
   mobilePreview: false,
+  promptFolders: ['真人', '情侶', '商品', '場景', '影片'],
 }
 const NAV_ITEMS = ['首頁', '待辦事項', '專案', '提示詞', '設定']
 
@@ -55,8 +57,9 @@ export default function App() {
     reload()
   }
 
-  async function addLibrary(item) {
-    await db.library.put({ ...item, id: 'library-' + crypto.randomUUID(), updatedAt: Date.now() })
+  async function saveLibrary(item) {
+    const id = item.id || 'library-' + crypto.randomUUID()
+    await db.library.put({ ...item, id, updatedAt: Date.now() })
     await markDirty()
     reload()
   }
@@ -103,7 +106,12 @@ export default function App() {
       <section className="page">
         {page === '專案' && <Projects projects={projects} onEdit={setModal} onAdd={() => setModal(EMPTY_PROJECT)} />}
         {page === '待辦事項' && <Todo items={inbox} onAdd={addInbox} />}
-        {page === '提示詞' && <Library items={library} onAdd={addLibrary} />}
+        {page === '提示詞' && <PromptLibrary
+          items={library}
+          folders={preferences.promptFolders}
+          onSave={saveLibrary}
+          onFoldersChange={folders => updatePreferences({ promptFolders: folders })}
+        />}
         {page === '設定' && <Settings
           assistant={assistant}
           preferences={preferences}
@@ -160,20 +168,6 @@ function Todo({ items, onAdd }) {
   </>
 }
 
-function Library({ items, onAdd }) {
-  const [showAdd, setShowAdd] = useState(false)
-  return <>
-    <button className="add-card" onClick={() => setShowAdd(true)}>＋ 新增提示詞／素材</button>
-    <Section title="提示詞／素材">{items.map(item => <article className="card" key={item.id}>
-      {item.image && <img className="library-image" src={item.image} alt="素材預覽" />}
-      <div className="row"><strong>{item.title}</strong><span>{item.type}</span></div>
-      <p>{item.content}</p>
-      <div className="tags">{item.tags?.map(tag => <em key={tag}>#{tag}</em>)}</div>
-    </article>)}</Section>
-    {showAdd && <LibraryModal onClose={() => setShowAdd(false)} onSave={async item => { await onAdd(item); setShowAdd(false) }} />}
-  </>
-}
-
 function Section({ title, children }) {
   return <section className="section"><h2>{title}</h2><div className="stack">{children}</div></section>
 }
@@ -187,19 +181,6 @@ function ProjectModal({ project, onClose, onSave }) {
     <label>我的草稿<textarea value={draft.draft} onChange={e => setDraft({ ...draft, draft: e.target.value })} /></label>
     <label>進度<input type="range" min="0" max="100" value={draft.progress} onChange={e => setDraft({ ...draft, progress: Number(e.target.value) })} /><span>{draft.progress}%</span></label>
     <button className="primary full" disabled={!draft.name.trim()} onClick={() => onSave(draft)}>儲存修改</button>
-  </Sheet>
-}
-
-function LibraryModal({ onClose, onSave }) {
-  const [draft, setDraft] = useState({ title: '', type: 'Prompt', content: '', tags: '', image: '' })
-  async function chooseImage(file) { if (file) setDraft({ ...draft, image: await toDataUrl(file) }) }
-  return <Sheet title="新增提示詞／素材" onClose={onClose}>
-    <label>名稱<input value={draft.title} onChange={e => setDraft({ ...draft, title: e.target.value })} /></label>
-    <label>提示詞／備註<textarea value={draft.content} onChange={e => setDraft({ ...draft, content: e.target.value })} /></label>
-    <label>標籤（逗號分隔）<input value={draft.tags} onChange={e => setDraft({ ...draft, tags: e.target.value })} /></label>
-    <label className="upload">選擇圖片<input type="file" accept="image/*" onChange={e => chooseImage(e.target.files?.[0])} /></label>
-    {draft.image && <img className="preview" src={draft.image} alt="預覽" />}
-    <button className="primary full" disabled={!draft.title.trim()} onClick={() => onSave({ ...draft, tags: draft.tags.split(',').map(x => x.trim()).filter(Boolean) })}>存到素材庫</button>
   </Sheet>
 }
 
