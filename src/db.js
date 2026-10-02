@@ -16,6 +16,14 @@ export async function seedDb() {
   if (!(await db.settings.get('assistant'))) {
     await db.settings.put({ key: 'assistant', image: '', name: '小周' })
   }
+  if (!(await db.settings.get('preferences'))) {
+    await db.settings.put({
+      key: 'preferences',
+      darkMode: false,
+      homeBackground: 'cream',
+      backgroundImage: '',
+    })
+  }
 }
 
 export async function pendingCount() {
