@@ -1,0 +1,191 @@
+/* Project continuation view */
+.project-resume-head {
+  display: grid;
+  gap: 8px;
+}
+.project-resume-head > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.project-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+}
+.project-resume-head strong {
+  color: var(--accent);
+  font-size: 14px;
+}
+.project-resume-progress { margin: 0; }
+
+.project-resume-summary {
+  display: grid;
+  gap: 10px;
+}
+.project-resume-summary > div {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-soft);
+}
+.project-resume-summary small,
+.project-detail-body small {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .06em;
+}
+.project-resume-summary p,
+.project-detail-body p {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.5;
+}
+.project-next-block {
+  border-color: color-mix(in srgb, var(--accent) 38%, var(--border)) !important;
+}
+.project-next-block p {
+  font-weight: 800;
+}
+
+.project-detail-accordion {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.project-detail-accordion summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px;
+  color: var(--text);
+  font-weight: 800;
+}
+.project-detail-accordion summary::-webkit-details-marker { display: none; }
+.project-detail-accordion[open] .accordion-chevron { transform: rotate(180deg); }
+.project-detail-body {
+  display: grid;
+  gap: 12px;
+  padding: 0 14px 14px;
+  border-top: 1px solid var(--border);
+}
+.project-detail-body > div { padding-top: 12px; }
+
+
+/* Project continuation index */
+.project-index {
+  display: grid;
+}
+.project-index-row {
+  padding: 13px 2px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.project-index-row:first-child { padding-top: 2px; }
+.project-index-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+.project-index-plus {
+  color: var(--accent);
+  font-size: 18px;
+  font-weight: 500;
+}
+.project-index-row p {
+  margin: 7px 0 0;
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.45;
+}
+.project-index-row p.strong {
+  font-weight: 800;
+}
+
+.project-full-detail,
+.project-edit-detail {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.project-full-detail summary,
+.project-edit-detail summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px;
+  color: var(--text);
+  font-weight: 800;
+}
+.project-full-detail summary::-webkit-details-marker,
+.project-edit-detail summary::-webkit-details-marker { display: none; }
+.detail-plus {
+  color: var(--accent);
+  font-size: 20px;
+  font-weight: 500;
+  transition: transform .18s ease;
+}
+.project-full-detail[open] .detail-plus,
+.project-edit-detail[open] .detail-plus {
+  transform: rotate(45deg);
+}
+.project-full-detail-body,
+.project-edit-detail-body {
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+  border-top: 1px solid var(--border);
+}
+.project-full-detail-body h3 {
+  margin: 0 0 9px;
+  color: var(--text);
+  font-size: 14px;
+}
+.project-full-detail-body pre {
+  margin: 0;
+  padding: 13px;
+  border-radius: 13px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.project-detail-status {
+  display: grid;
+  gap: 9px;
+}
+.project-detail-status p {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.5;
+}
+.project-detail-status strong {
+  color: var(--accent);
+}
+.project-edit-detail-body .flow-editor {
+  min-height: 150px;
+}
