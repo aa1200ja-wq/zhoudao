@@ -751,3 +751,26 @@ textarea::placeholder, input::placeholder { color: var(--muted); opacity: .78; }
   .prompt-grid { gap: 8px; }
   .prompt-tile-copy { padding: 8px; }
 }
+
+
+.prompt-folder-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.prompt-folder-actions button {
+  min-height: 40px;
+  border-radius: 13px;
+  cursor: pointer;
+  font-weight: 750;
+}
+.folder-add-visible {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+.folder-manage-visible {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
