@@ -189,31 +189,53 @@ function ProjectModal({ project, onClose, onSave }) {
 
   if (!editing) {
     return <Sheet title="專案續接" onClose={onClose}>
-      <div className="project-index">
-        <ProjectIndexRow label="項目名稱" value={project.name || '尚未填寫'} />
-        <ProjectIndexRow label="目前步驟" value={project.current || '尚未填寫'} />
-        <ProjectIndexRow label="下一步" value={project.next || '尚未填寫'} strong />
-        <ProjectIndexRow label="我的草稿" value={project.draft || '目前沒有草稿'} />
-      </div>
+      <div className="project-accordion-stack">
+        <ProjectInfoAccordion
+          label="項目名稱"
+          value={project.name || '尚未填寫'}
+        >
+          <p><strong>狀態：</strong>{project.status || '尚未填寫'}</p>
+          <p><strong>進度：</strong>{project.progress ?? 0}%</p>
+          <p><strong>最後更新：</strong>{project.updatedAt ? formatTime(project.updatedAt) : '尚無紀錄'}</p>
+        </ProjectInfoAccordion>
 
-      <details className="project-full-detail">
-        <summary>
-          <span>專案詳細資料</span>
-          <span className="detail-plus">＋</span>
-        </summary>
-        <div className="project-full-detail-body">
-          <section>
+        <ProjectInfoAccordion
+          label="目前步驟"
+          value={project.current || '尚未填寫'}
+        >
+          <p>{project.currentStepDetail || project.current || '尚未填寫詳細內容'}</p>
+          <p><strong>本次要做：</strong>{project.currentTask || project.current || '尚未填寫'}</p>
+        </ProjectInfoAccordion>
+
+        <ProjectInfoAccordion
+          label="下一步"
+          value={project.next || '尚未填寫'}
+        >
+          <p>{project.nextDetail || project.next || '尚未填寫詳細內容'}</p>
+        </ProjectInfoAccordion>
+
+        <ProjectInfoAccordion
+          label="我的草稿"
+          value={project.draft || '目前沒有草稿'}
+        >
+          <p>{project.draft || '目前沒有補充內容。'}</p>
+        </ProjectInfoAccordion>
+
+        <ProjectInfoAccordion
+          label="專案詳細資料"
+          value="完整流程表與續接資訊"
+        >
+          <section className="project-flow-section">
             <h3>【專案流程表】</h3>
             <pre>{project.flowText || buildFallbackFlow(project)}</pre>
           </section>
-
           <section className="project-detail-status">
             <p><strong>目前步驟：</strong>{project.currentStepDetail || project.current || '尚未填寫'}</p>
             <p><strong>本次要做：</strong>{project.currentTask || project.current || '尚未填寫'}</p>
             <p><strong>下一步：</strong>{project.nextDetail || project.next || '尚未填寫'}</p>
           </section>
-        </div>
-      </details>
+        </ProjectInfoAccordion>
+      </div>
 
       <button className="secondary full" onClick={() => setEditing(true)}>編輯專案資料</button>
     </Sheet>
@@ -225,12 +247,15 @@ function ProjectModal({ project, onClose, onSave }) {
     <label>下一步<textarea value={draft.next} onChange={e => setDraft({ ...draft, next: e.target.value })} /></label>
     <label>我的草稿<textarea value={draft.draft} onChange={e => setDraft({ ...draft, draft: e.target.value })} /></label>
 
-    <details className="project-edit-detail">
+    <details className="settings-card setting-accordion project-edit-detail">
       <summary>
-        <span>編輯詳細專案資料</span>
-        <span className="detail-plus">＋</span>
+        <div>
+          <strong>詳細專案資料</strong>
+          <p>流程表、目前步驟與下一步補充。</p>
+        </div>
+        <span className="project-plus">＋</span>
       </summary>
-      <div className="project-edit-detail-body">
+      <div className="accordion-body project-edit-detail-body">
         <label>專案流程表
           <textarea
             className="flow-editor"
@@ -258,14 +283,19 @@ function ProjectModal({ project, onClose, onSave }) {
   </Sheet>
 }
 
-function ProjectIndexRow({ label, value, strong = false }) {
-  return <div className="project-index-row">
-    <div className="project-index-label">
-      <span>{label}</span>
-      <span className="project-index-plus">＋</span>
+function ProjectInfoAccordion({ label, value, children }) {
+  return <details className="settings-card setting-accordion project-info-accordion">
+    <summary>
+      <div>
+        <strong>{label}</strong>
+        <p>{value}</p>
+      </div>
+      <span className="project-plus">＋</span>
+    </summary>
+    <div className="accordion-body project-info-body">
+      {children}
     </div>
-    <p className={strong ? 'strong' : ''}>{value}</p>
-  </div>
+  </details>
 }
 
 function buildFallbackFlow(project) {
