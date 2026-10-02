@@ -1,0 +1,29 @@
+/* Settings accordion */
+.setting-accordion { padding: 0; overflow: hidden; }
+.setting-accordion summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 15px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.setting-accordion summary::-webkit-details-marker { display: none; }
+.setting-accordion summary strong { color: var(--text); }
+.setting-accordion summary p { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+.accordion-chevron {
+  color: var(--muted);
+  font-size: 18px;
+  transition: transform .18s ease;
+}
+.setting-accordion[open] .accordion-chevron { transform: rotate(180deg); }
+.accordion-body {
+  padding: 0 16px 16px;
+  border-top: 1px solid var(--border);
+}
+.setting-divider {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
