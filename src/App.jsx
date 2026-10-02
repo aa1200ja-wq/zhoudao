@@ -35,7 +35,7 @@ export default function App() {
     setPreferences({
       ...DEFAULT_PREFS,
       ...(saved || {}),
-      shortcuts: saved?.shortcuts?.length === 4 ? saved.shortcuts : DEFAULT_SHORTCUTS,
+      shortcuts: saved?.shortcuts?.length === 4 ? saved.shortcuts : DEFAULT_PREFS.shortcuts,
       bottomNav: normalizeBottomNav(saved?.bottomNav),
     })
     setPending(await pendingCount())
@@ -175,7 +175,7 @@ export default function App() {
           onDelete={deleteInbox}
           onConvert={convertInboxToProject}
         />}
-        {page === '提示詞' && <PromptLibrary
+        {page === '圖庫' && <PromptLibrary
           items={library}
           folders={preferences.promptFolders}
           onSave={saveLibrary}
