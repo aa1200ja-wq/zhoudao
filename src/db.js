@@ -1,6 +1,7 @@
 import Dexie from 'dexie'
 import { starterProjects, starterPrompts } from './data'
 import { DEFAULT_SHORTCUTS } from './navigation'
+import { DEFAULT_ASSISTANT } from './assistantConfig'
 
 export const db = new Dexie('zhoudao-db')
 
@@ -23,7 +24,7 @@ export async function seedDb() {
   if ((await db.projects.count()) === 0) await db.projects.bulkAdd(starterProjects)
   if ((await db.library.count()) === 0) await db.library.bulkAdd(starterPrompts)
   if (!(await db.settings.get('assistant'))) {
-    await db.settings.put({ key: 'assistant', image: '', name: '小周' })
+    await db.settings.put(DEFAULT_ASSISTANT)
   }
   if (!(await db.settings.get('preferences'))) {
     await db.settings.put({
