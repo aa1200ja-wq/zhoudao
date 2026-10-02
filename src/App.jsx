@@ -91,12 +91,14 @@ function Home({ assistant, message, projects, onUpload, onEdit }) {
   }
   return <>
     <section className="assistant-card">
-      <label className="portrait" title="更換小助手圖片">
-        {assistant.image ? <img src={assistant.image} alt="小助手" /> : <span>小周</span>}
-        <input hidden type="file" accept="image/*" onChange={e => onUpload(e.target.files?.[0])} />
-      </label>
+      <div className="assistant-visual">
+        <button className="portrait" onClick={sayNext} title="跟小助手互動">
+          {assistant.image ? <img src={assistant.image} alt="小助手" /> : <span>小周</span>}
+        </button>
+        <label className="change-photo">換圖<input hidden type="file" accept="image/*" onChange={e => onUpload(e.target.files?.[0])} /></label>
+      </div>
       <button className="speech" onClick={sayNext}>{line}</button>
-      <p className="hint">點角色更換圖片；點對話框讓小助手換一句。</p>
+      <p className="hint">點角色會講話；「換圖」可指定首頁小助手形象。</p>
     </section>
     <Section title="最近專案">{projects.slice(0, 3).map(p => <ProjectCard key={p.id} project={p} onEdit={onEdit} />)}</Section>
   </>
