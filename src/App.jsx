@@ -203,28 +203,6 @@ function ProjectModal({ project, onClose, onSave }) {
           label="目前步驟"
           value={project.current || '尚未填寫'}
         >
-          <p>{project.currentStepDetail || project.current || '尚未填寫詳細內容'}</p>
-          <p><strong>本次要做：</strong>{project.currentTask || project.current || '尚未填寫'}</p>
-        </ProjectInfoAccordion>
-
-        <ProjectInfoAccordion
-          label="下一步"
-          value={project.next || '尚未填寫'}
-        >
-          <p>{project.nextDetail || project.next || '尚未填寫詳細內容'}</p>
-        </ProjectInfoAccordion>
-
-        <ProjectInfoAccordion
-          label="我的草稿"
-          value={project.draft || '目前沒有草稿'}
-        >
-          <p>{project.draft || '目前沒有補充內容。'}</p>
-        </ProjectInfoAccordion>
-
-        <ProjectInfoAccordion
-          label="專案詳細資料"
-          value="完整流程表與續接資訊"
-        >
           <section className="project-flow-section">
             <h3>【專案流程表】</h3>
             <pre>{project.flowText || buildFallbackFlow(project)}</pre>
@@ -232,8 +210,21 @@ function ProjectModal({ project, onClose, onSave }) {
           <section className="project-detail-status">
             <p><strong>目前步驟：</strong>{project.currentStepDetail || project.current || '尚未填寫'}</p>
             <p><strong>本次要做：</strong>{project.currentTask || project.current || '尚未填寫'}</p>
-            <p><strong>下一步：</strong>{project.nextDetail || project.next || '尚未填寫'}</p>
           </section>
+        </ProjectInfoAccordion>
+
+        <ProjectInfoAccordion
+          label="下一步"
+          value={project.next || '尚未填寫'}
+        >
+          <p><strong>下一步：</strong>{project.nextDetail || project.next || '尚未填寫詳細內容'}</p>
+        </ProjectInfoAccordion>
+
+        <ProjectInfoAccordion
+          label="我的草稿"
+          value={project.draft || '目前沒有草稿'}
+        >
+          <p>{project.draft || '目前沒有補充內容。'}</p>
         </ProjectInfoAccordion>
       </div>
 
