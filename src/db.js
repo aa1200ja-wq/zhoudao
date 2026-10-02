@@ -1,5 +1,6 @@
 import Dexie from 'dexie'
 import { starterProjects, starterPrompts } from './data'
+import { DEFAULT_SHORTCUTS } from './navigation'
 
 export const db = new Dexie('zhoudao-db')
 
@@ -22,6 +23,7 @@ export async function seedDb() {
       darkMode: false,
       homeBackground: 'cream',
       backgroundImage: '',
+      shortcuts: DEFAULT_SHORTCUTS,
     })
   }
 }
