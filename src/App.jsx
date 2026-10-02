@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { db, markDirty, pendingCount, seedDb } from './db'
+import Settings from './Settings'
 
-const TABS = ['首頁', '專案', '收件匣', 'Prompt']
+const TABS = ['首頁', '專案', '收件匣', 'Prompt', '設定']
 const EMPTY_PROJECT = { name: '', status: '進行中', progress: 0, current: '', next: '', draft: '' }
 
 export default function App() {
@@ -10,6 +11,7 @@ export default function App() {
   const [library, setLibrary] = useState([])
   const [inbox, setInbox] = useState([])
   const [assistant, setAssistant] = useState({ name: '小周', image: '' })
+  const [preferences, setPreferences] = useState({ darkMode: false, homeBackground: 'cream', backgroundImage: '' })
   const [pending, setPending] = useState(0)
   const [modal, setModal] = useState(null)
 
@@ -18,6 +20,7 @@ export default function App() {
     setLibrary(await db.library.orderBy('updatedAt').reverse().toArray())
     setInbox(await db.inbox.orderBy('updatedAt').reverse().toArray())
     setAssistant((await db.settings.get('assistant')) || { name: '小周', image: '' })
+    setPreferences((await db.settings.get('preferences')) || { darkMode: false, homeBackground: 'cream', backgroundImage: '' })
     setPending(await pendingCount())
   }
 
@@ -51,22 +54,49 @@ export default function App() {
     reload()
   }
 
+  async function resetAssistant() {
+    await db.settings.put({ key: 'assistant', name: '小周', image: '' })
+    await markDirty()
+    reload()
+  }
+
+  async function updatePreferences(patch) {
+    const next = { ...preferences, ...patch, key: 'preferences' }
+    await db.settings.put(next)
+    await markDirty()
+    reload()
+  }
+
+  async function uploadBackground(file) {
+    if (!file) return
+    const backgroundImage = await toDataUrl(file)
+    await updatePreferences({ homeBackground: 'custom', backgroundImage })
+  }
+
   const homeMessage = useMemo(() => {
     const next = projects[0]?.next || '先新增第一個專案'
     return pending ? '目前有 ' + pending + ' 項待同步' : '下一步：' + next
   }, [pending, projects])
 
-  return <main className="app-shell">
+  return <main className={'app-shell ' + (preferences.darkMode ? 'dark' : '')}>
     <header className="topbar">
       <div><p className="eyebrow">周到</p><h1>{tab}</h1></div>
       <span className="sync-chip">待同步 {pending}</span>
     </header>
 
     <section className="page">
-      {tab === '首頁' && <Home assistant={assistant} message={homeMessage} projects={projects} onUpload={uploadAssistant} onEdit={setModal} />}
+      {tab === '首頁' && <Home assistant={assistant} preferences={preferences} message={homeMessage} projects={projects} onEdit={setModal} />}
       {tab === '專案' && <Projects projects={projects} onEdit={setModal} onAdd={() => setModal(EMPTY_PROJECT)} />}
       {tab === '收件匣' && <Inbox items={inbox} onAdd={addInbox} />}
       {tab === 'Prompt' && <Library items={library} onAdd={addLibrary} />}
+      {tab === '設定' && <Settings
+        assistant={assistant}
+        preferences={preferences}
+        onAssistantUpload={uploadAssistant}
+        onAssistantReset={resetAssistant}
+        onPreferenceChange={updatePreferences}
+        onBackgroundUpload={uploadBackground}
+      />}
     </section>
 
     <footer className="actions">
@@ -82,26 +112,26 @@ export default function App() {
   </main>
 }
 
-function Home({ assistant, message, projects, onUpload, onEdit }) {
+function Home({ assistant, preferences, message, projects, onEdit }) {
   const [line, setLine] = useState(message)
   useEffect(() => setLine(message), [message])
   const sayNext = () => {
     const item = projects[Math.floor(Math.random() * Math.max(projects.length, 1))]
     setLine(item?.next ? item.name + '：' + item.next : message)
   }
-  return <>
+  const style = preferences.backgroundImage
+    ? { backgroundImage: 'linear-gradient(#ffffff99,#ffffff99), url("' + preferences.backgroundImage + '")' }
+    : undefined
+  return <div className={'home-stage bg-' + preferences.homeBackground} style={style}>
     <section className="assistant-card">
-      <div className="assistant-visual">
-        <button className="portrait" onClick={sayNext} title="跟小助手互動">
-          {assistant.image ? <img src={assistant.image} alt="小助手" /> : <span>小周</span>}
-        </button>
-        <label className="change-photo">換圖<input hidden type="file" accept="image/*" onChange={e => onUpload(e.target.files?.[0])} /></label>
-      </div>
+      <button className="portrait" onClick={sayNext} title="跟小助手互動">
+        {assistant.image ? <img src={assistant.image} alt="小助手" /> : <span>小周</span>}
+      </button>
       <button className="speech" onClick={sayNext}>{line}</button>
-      <p className="hint">點角色會講話；「換圖」可指定首頁小助手形象。</p>
+      <p className="hint">點人物或對話框，小助手會換一句。</p>
     </section>
     <Section title="最近專案">{projects.slice(0, 3).map(p => <ProjectCard key={p.id} project={p} onEdit={onEdit} />)}</Section>
-  </>
+  </div>
 }
 
 function Projects({ projects, onEdit, onAdd }) {
