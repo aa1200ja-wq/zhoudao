@@ -4,7 +4,9 @@ import HomeStage from './HomeStage'
 import Settings from './Settings'
 import PromptLibrary from './PromptLibrary'
 import GlobalSearch from './GlobalSearch'
-import { DEFAULT_BOTTOM_NAV, DEFAULT_SHORTCUTS, resolveBottomNav } from './navigation'
+import Portfolio from './Portfolio'
+import { HomeIcon, SettingsIcon } from './AppIcons'
+import { DEFAULT_BOTTOM_NAV, DEFAULT_SHORTCUTS, normalizeBottomNav, resolveBottomNav } from './navigation'
 
 const EMPTY_PROJECT = {
   name: '',
@@ -34,6 +36,7 @@ export default function App() {
   const [projects, setProjects] = useState([])
   const [library, setLibrary] = useState([])
   const [inbox, setInbox] = useState([])
+  const [portfolio, setPortfolio] = useState([])
   const [assistant, setAssistant] = useState({ name: '小周', image: '' })
   const [preferences, setPreferences] = useState(DEFAULT_PREFS)
   const [pending, setPending] = useState(0)
@@ -43,13 +46,14 @@ export default function App() {
     setProjects(await db.projects.orderBy('updatedAt').reverse().toArray())
     setLibrary(await db.library.orderBy('updatedAt').reverse().toArray())
     setInbox(await db.inbox.orderBy('updatedAt').reverse().toArray())
+    setPortfolio(await db.portfolio.orderBy('updatedAt').reverse().toArray())
     setAssistant((await db.settings.get('assistant')) || { name: '小周', image: '' })
     const saved = await db.settings.get('preferences')
     setPreferences({
       ...DEFAULT_PREFS,
       ...(saved || {}),
       shortcuts: saved?.shortcuts?.length === 4 ? saved.shortcuts : DEFAULT_SHORTCUTS,
-      bottomNav: saved?.bottomNav?.length === 5 ? saved.bottomNav : DEFAULT_BOTTOM_NAV,
+      bottomNav: normalizeBottomNav(saved?.bottomNav),
     })
     setPending(await pendingCount())
   }
@@ -124,6 +128,19 @@ export default function App() {
     reload()
   }
 
+  async function savePortfolio(item) {
+    const id = item.id || 'portfolio-' + crypto.randomUUID()
+    await db.portfolio.put({ ...item, id, updatedAt: Date.now() })
+    await markDirty()
+    reload()
+  }
+
+  async function deletePortfolio(id) {
+    await db.portfolio.delete(id)
+    await markDirty()
+    reload()
+  }
+
   async function uploadAssistant(file) {
     if (!file) return
     await db.settings.put({ key: 'assistant', name: assistant.name, image: await toDataUrl(file) })
@@ -158,9 +175,13 @@ export default function App() {
       onOpenPage={openPage}
     /> : <>
       <header className="page-header">
-        <button className="back-button" onClick={() => setPage('首頁')}>‹</button>
+        <button className="corner-nav-button" onClick={() => setPage('首頁')} aria-label="首頁">
+          <HomeIcon />
+        </button>
         <div><p>周到</p><h1>{page}</h1></div>
-        <span className="sync-chip">待同步 {pending}</span>
+        <button className="corner-nav-button" onClick={() => setPage('設定')} aria-label="設定">
+          <SettingsIcon />
+        </button>
       </header>
 
       <section className="page">
@@ -185,6 +206,11 @@ export default function App() {
           onOpenPage={setPage}
           onOpenProject={project => setModal(project)}
         />}
+        {page === '作品集' && <Portfolio
+          items={portfolio}
+          onSave={savePortfolio}
+          onDelete={deletePortfolio}
+        />}
         {page === '設定' && <Settings
           assistant={assistant}
           preferences={preferences}
@@ -195,7 +221,7 @@ export default function App() {
         />}
       </section>
 
-      <InnerNav page={page} items={preferences.bottomNav} onOpen={setPage} />
+      <InnerNav page={page} items={normalizeBottomNav(preferences.bottomNav)} onOpen={setPage} />
     </>}
 
     {modal && <ProjectModal project={modal} onClose={() => setModal(null)} onSave={saveProject} />}
