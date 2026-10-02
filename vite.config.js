@@ -11,7 +11,7 @@ export default defineConfig({
       manifest: {
         name: '周到｜小助手',
         short_name: '周到',
-        description: '專案續接、Prompt 與靈感整理助手',
+        description: '專案續接、圖庫、作品集與每日事項整理助手',
         theme_color: '#f5efe5',
         background_color: '#f5efe5',
         display: 'standalone',
