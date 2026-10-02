@@ -1,0 +1,21 @@
+/* Larger inner navigation */
+.inner-nav button {
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 650;
+  padding: 11px 2px;
+}
+
+/* Mobile preview mode */
+@media (min-width: 621px) {
+  .app-shell.preview-mobile {
+    width: 390px;
+    min-height: 844px;
+  }
+  .app-shell.preview-mobile .stage {
+    min-height: 844px;
+  }
+  .app-shell.preview-mobile .inner-nav {
+    width: 390px;
+  }
+}
