@@ -253,7 +253,7 @@ function ProjectModal({ project, onClose, onSave }) {
           <strong>詳細專案資料</strong>
           <p>流程表、目前步驟與下一步補充。</p>
         </div>
-        <span className="project-plus">＋</span>
+        <span className="accordion-chevron">⌄</span>
       </summary>
       <div className="accordion-body project-edit-detail-body">
         <label>專案流程表
@@ -290,7 +290,7 @@ function ProjectInfoAccordion({ label, value, children }) {
         <strong>{label}</strong>
         <p>{value}</p>
       </div>
-      <span className="project-plus">＋</span>
+      <span className="accordion-chevron">⌄</span>
     </summary>
     <div className="accordion-body project-info-body">
       {children}
