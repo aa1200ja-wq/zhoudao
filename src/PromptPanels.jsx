@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { SPECIAL_FILTERS } from './promptConfig'
 
 export function PromptDetail({ item, folders, onClose, onEdit, onPatch }) {
   async function copyPrompt() {
