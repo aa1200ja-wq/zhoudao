@@ -74,7 +74,7 @@ export default function PromptLibrary({
           placeholder="搜尋名稱、Prompt、標籤…"
         />
       </div>
-      <button className="prompt-add" onClick={() => setEditing(emptyPrompt(folderList[0]))}>＋</button>
+      <button className="prompt-add" onClick={() => setEditing(emptyPrompt('未整理'))}>＋</button>
     </div>
 
     <div className="folder-strip">
@@ -98,10 +98,13 @@ export default function PromptLibrary({
     </div>
 
     {visible.length ? <div className="prompt-grid">
-      {visible.map(item => <button
+      {visible.map(item => <div
         key={item.id}
         className="prompt-tile"
+        role="button"
+        tabIndex={0}
         onClick={() => setSelected(item)}
+        onKeyDown={e => { if (e.key === 'Enter') setSelected(item) }}
       >
         <div className={'prompt-thumb ' + (!item.image ? 'no-image' : '')}>
           {item.image
@@ -124,7 +127,7 @@ export default function PromptLibrary({
             {(item.tags || []).slice(0, 3).map(tag => <em key={tag}>#{tag}</em>)}
           </div>
         </div>
-      </button>)}
+      </div>)}
     </div> : <div className="prompt-empty">
       <span>✦</span>
       <strong>這裡還沒有內容</strong>
