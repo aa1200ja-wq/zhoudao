@@ -10,6 +10,7 @@ const DEFAULT_PREFS = {
   homeBackground: 'cream',
   backgroundImage: '',
   shortcuts: DEFAULT_SHORTCUTS,
+  mobilePreview: false,
 }
 const NAV_ITEMS = ['首頁', '待辦事項', '專案', '提示詞', '設定']
 
@@ -85,7 +86,7 @@ export default function App() {
     await updatePreferences({ homeBackground: 'custom', backgroundImage: await toDataUrl(file) })
   }
 
-  return <main className={'app-shell ' + (preferences.darkMode ? 'dark' : '')}>
+  return <main className={'app-shell ' + (preferences.darkMode ? 'dark ' : '') + (preferences.mobilePreview ? 'preview-mobile' : '')}>
     {page === '首頁' ? <HomeStage
       assistant={assistant}
       preferences={preferences}
