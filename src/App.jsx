@@ -3,7 +3,8 @@ import { db, markDirty, pendingCount, seedDb } from './db'
 import HomeStage from './HomeStage'
 import Settings from './Settings'
 import PromptLibrary from './PromptLibrary'
-import { DEFAULT_SHORTCUTS } from './navigation'
+import GlobalSearch from './GlobalSearch'
+import { DEFAULT_BOTTOM_NAV, DEFAULT_SHORTCUTS, resolveBottomNav } from './navigation'
 
 const EMPTY_PROJECT = {
   name: '',
@@ -26,9 +27,8 @@ const DEFAULT_PREFS = {
   shortcuts: DEFAULT_SHORTCUTS,
   mobilePreview: false,
   promptFolders: ['真人', '情侶', '商品', '場景', '影片'],
+  bottomNav: DEFAULT_BOTTOM_NAV,
 }
-const NAV_ITEMS = ['首頁', '待辦事項', '專案', '提示詞', '設定']
-
 export default function App() {
   const [page, setPage] = useState('首頁')
   const [projects, setProjects] = useState([])
@@ -45,7 +45,12 @@ export default function App() {
     setInbox(await db.inbox.orderBy('updatedAt').reverse().toArray())
     setAssistant((await db.settings.get('assistant')) || { name: '小周', image: '' })
     const saved = await db.settings.get('preferences')
-    setPreferences({ ...DEFAULT_PREFS, ...(saved || {}), shortcuts: saved?.shortcuts?.length === 4 ? saved.shortcuts : DEFAULT_SHORTCUTS })
+    setPreferences({
+      ...DEFAULT_PREFS,
+      ...(saved || {}),
+      shortcuts: saved?.shortcuts?.length === 4 ? saved.shortcuts : DEFAULT_SHORTCUTS,
+      bottomNav: saved?.bottomNav?.length === 5 ? saved.bottomNav : DEFAULT_BOTTOM_NAV,
+    })
     setPending(await pendingCount())
   }
 
@@ -125,6 +130,13 @@ export default function App() {
           onSave={saveLibrary}
           onFoldersChange={folders => updatePreferences({ promptFolders: folders })}
         />}
+        {page === '全域搜尋' && <GlobalSearch
+          projects={projects}
+          inbox={inbox}
+          library={library}
+          onOpenPage={setPage}
+          onOpenProject={project => setModal(project)}
+        />}
         {page === '設定' && <Settings
           assistant={assistant}
           preferences={preferences}
@@ -135,20 +147,23 @@ export default function App() {
         />}
       </section>
 
-      <InnerNav page={page} onOpen={setPage} />
+      <InnerNav page={page} items={preferences.bottomNav} onOpen={setPage} />
     </>}
 
     {modal && <ProjectModal project={modal} onClose={() => setModal(null)} onSave={saveProject} />}
   </main>
 }
 
-function InnerNav({ page, onOpen }) {
+function InnerNav({ page, items, onOpen }) {
   return <nav className="inner-nav">
-    {NAV_ITEMS.map(item => <button
-      key={item}
-      className={page === item ? 'active' : ''}
-      onClick={() => onOpen(item)}
-    >{item}</button>)}
+    {items.map(item => {
+      const nav = resolveBottomNav(item)
+      return <button
+        key={nav.page}
+        className={page === nav.page ? 'active' : ''}
+        onClick={() => onOpen(nav.page)}
+      >{nav.label}</button>
+    })}
   </nav>
 }
 
