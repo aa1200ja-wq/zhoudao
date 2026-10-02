@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
-import { FolderManager, PromptDetail, PromptEditor, emptyPrompt, labelForFilter } from './PromptPanels'
+import { FolderManager, PromptEditor, emptyPrompt, labelForFilter } from './PromptPanels'
+import GalleryViewer from './GalleryViewer'
 import { DEFAULT_FOLDERS, SPECIAL_FILTERS } from './promptConfig'
 
 export default function PromptLibrary({
@@ -67,7 +68,7 @@ export default function PromptLibrary({
         autoFocus
         value={query}
         onChange={e => setQuery(e.target.value)}
-        placeholder="搜尋名稱、Prompt、標籤…"
+        placeholder="搜尋圖片名稱、Prompt、標籤…"
       />
       {query && <button className="search-clear" onClick={() => setQuery('')}>×</button>}
     </div>}
@@ -127,7 +128,7 @@ export default function PromptLibrary({
       <p>換個資料夾、搜尋詞，或新增一組提示詞。</p>
     </div>}
 
-    {selected && <PromptDetail
+    {selected && <GalleryViewer
       item={selected}
       folders={folderList}
       onClose={() => setSelected(null)}
