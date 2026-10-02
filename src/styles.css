@@ -1062,3 +1062,10 @@ textarea::placeholder, input::placeholder { color: var(--muted); opacity: .78; }
   white-space: pre-wrap;
   word-break: break-word;
 }
+
+
+/* Project accordion chevrons match settings */
+.project-info-accordion[open] .accordion-chevron,
+.project-edit-detail[open] .accordion-chevron {
+  transform: rotate(180deg);
+}
