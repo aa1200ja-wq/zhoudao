@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "npm run check:lines && vite build",
+    "preview": "vite preview",
+    "check:lines": "node scripts/check-lines.mjs"
   },
   "dependencies": {
     "dexie": "^4.2.1",
