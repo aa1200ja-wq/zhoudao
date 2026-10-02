@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { DEFAULT_SHORTCUTS, SHORTCUT_OPTIONS, resolveShortcut } from './navigation'
+import { BOTTOM_NAV_OPTIONS, DEFAULT_BOTTOM_NAV, DEFAULT_SHORTCUTS, SHORTCUT_OPTIONS, resolveShortcut } from './navigation'
 
 const BACKGROUNDS = [
   { id: 'cream', label: '奶油白' },
@@ -21,11 +21,27 @@ export default function Settings({
   const shortcuts = preferences.shortcuts?.length === 4
     ? preferences.shortcuts
     : DEFAULT_SHORTCUTS
+  const bottomNav = preferences.bottomNav?.length === 5
+    ? preferences.bottomNav
+    : DEFAULT_BOTTOM_NAV
 
   function setShortcut(index, id) {
     const next = [...shortcuts]
     next[index] = id
     onPreferenceChange({ shortcuts: next })
+  }
+
+  function setBottomNav(index, page) {
+    const next = [...bottomNav]
+    const previous = next[index]
+    const existingIndex = next.indexOf(page)
+
+    if (existingIndex !== -1 && existingIndex !== index) {
+      next[existingIndex] = previous
+    }
+
+    next[index] = page
+    onPreferenceChange({ bottomNav: next })
   }
 
   return <div className="settings-page">
@@ -88,6 +104,28 @@ export default function Settings({
         </div>
         <button className="secondary full" onClick={() => backgroundInput.current?.click()}>上傳自訂背景</button>
         <input ref={backgroundInput} hidden type="file" accept="image/*" onChange={e => onBackgroundUpload(e.target.files?.[0])} />
+      </div>
+    </details>
+
+
+    <details className="settings-card setting-accordion">
+      <summary>
+        <div><strong>底部導覽列</strong><p>設定 5 個常用入口與排列位置。</p></div>
+        <span className="accordion-chevron">⌄</span>
+      </summary>
+      <div className="accordion-body">
+        <div className="shortcut-settings">
+          {bottomNav.map((page, index) => (
+            <label className="shortcut-select" key={index}>
+              <span>位置 {index + 1}</span>
+              <select value={page} onChange={e => setBottomNav(index, e.target.value)}>
+                {BOTTOM_NAV_OPTIONS.map(option => (
+                  <option key={option.id} value={option.page}>{option.label}</option>
+                ))}
+              </select>
+            </label>
+          ))}
+        </div>
       </div>
     </details>
 
