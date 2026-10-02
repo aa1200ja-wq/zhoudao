@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import AssistantSettings from './AssistantSettings'
-import { BOTTOM_NAV_OPTIONS, DEFAULT_BOTTOM_NAV, DEFAULT_SHORTCUTS, SHORTCUT_OPTIONS, resolveShortcut } from './navigation'
+import BottomNavOrder from './BottomNavOrder'
+import { DEFAULT_BOTTOM_NAV, DEFAULT_SHORTCUTS, SHORTCUT_OPTIONS, resolveShortcut } from './navigation'
 
 const BACKGROUNDS = [
   { id: 'cream', label: '奶油白' },
@@ -32,18 +33,6 @@ export default function Settings({
     onPreferenceChange({ shortcuts: next })
   }
 
-  function setBottomNav(index, page) {
-    const next = [...bottomNav]
-    const previous = next[index]
-    const existingIndex = next.indexOf(page)
-
-    if (existingIndex !== -1 && existingIndex !== index) {
-      next[existingIndex] = previous
-    }
-
-    next[index] = page
-    onPreferenceChange({ bottomNav: next })
-  }
 
   return <div className="settings-page">
     <details className="settings-card setting-accordion" open>
@@ -99,22 +88,14 @@ export default function Settings({
 
     <details className="settings-card setting-accordion">
       <summary>
-        <div><strong>底部導覽列</strong><p>設定 5 個常用入口與排列位置。</p></div>
+        <div><strong>底部導覽列</strong><p>拖曳 5 個入口調整順序。</p></div>
         <span className="accordion-chevron">⌄</span>
       </summary>
       <div className="accordion-body">
-        <div className="shortcut-settings">
-          {bottomNav.map((page, index) => (
-            <label className="shortcut-select" key={index}>
-              <span>位置 {index + 1}</span>
-              <select value={page} onChange={e => setBottomNav(index, e.target.value)}>
-                {BOTTOM_NAV_OPTIONS.map(option => (
-                  <option key={option.id} value={option.page}>{option.label}</option>
-                ))}
-              </select>
-            </label>
-          ))}
-        </div>
+        <BottomNavOrder
+          items={bottomNav}
+          onChange={next => onPreferenceChange({ bottomNav: next })}
+        />
       </div>
     </details>
 
