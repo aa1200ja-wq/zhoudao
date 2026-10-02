@@ -1,13 +1,6 @@
 import { useMemo, useState } from 'react'
 import { FolderManager, PromptDetail, PromptEditor, emptyPrompt, labelForFilter } from './PromptPanels'
-
-const DEFAULT_FOLDERS = ['真人', '情侶', '商品', '場景', '影片']
-const SPECIAL_FILTERS = [
-  { id: 'all', label: '全部' },
-  { id: 'unfiled', label: '未整理' },
-  { id: 'verified', label: '已驗證' },
-  { id: 'favorite', label: '收藏' },
-]
+import { DEFAULT_FOLDERS, SPECIAL_FILTERS } from './promptConfig'
 
 export default function PromptLibrary({
   items,
