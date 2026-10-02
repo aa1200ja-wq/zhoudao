@@ -5,7 +5,18 @@ import Settings from './Settings'
 import PromptLibrary from './PromptLibrary'
 import { DEFAULT_SHORTCUTS } from './navigation'
 
-const EMPTY_PROJECT = { name: '', status: '進行中', progress: 0, current: '', next: '', draft: '' }
+const EMPTY_PROJECT = {
+  name: '',
+  status: '進行中',
+  progress: 0,
+  current: '',
+  next: '',
+  draft: '',
+  flowText: '',
+  currentStepDetail: '',
+  currentTask: '',
+  nextDetail: '',
+}
 const DEFAULT_PREFS = {
   darkMode: false,
   homeBackground: 'cream',
@@ -177,57 +188,91 @@ function ProjectModal({ project, onClose, onSave }) {
   const [draft, setDraft] = useState(project)
 
   if (!editing) {
-    return <Sheet title={project.name} onClose={onClose}>
-      <div className="project-resume-head">
-        <div>
-          <span className="project-status">{project.status}</span>
-          <strong>{project.progress}%</strong>
-        </div>
-        <div className="progress project-resume-progress"><i style={{ width: project.progress + '%' }} /></div>
+    return <Sheet title="專案續接" onClose={onClose}>
+      <div className="project-index">
+        <ProjectIndexRow label="項目名稱" value={project.name || '尚未填寫'} />
+        <ProjectIndexRow label="目前步驟" value={project.current || '尚未填寫'} />
+        <ProjectIndexRow label="下一步" value={project.next || '尚未填寫'} strong />
+        <ProjectIndexRow label="我的草稿" value={project.draft || '目前沒有草稿'} />
       </div>
 
-      <section className="project-resume-summary">
-        <div>
-          <small>目前做到</small>
-          <p>{project.current || '尚未填寫'}</p>
-        </div>
-        <div className="project-next-block">
-          <small>下一步</small>
-          <p>{project.next || '尚未填寫'}</p>
-        </div>
-      </section>
-
-      <details className="project-detail-accordion">
+      <details className="project-full-detail">
         <summary>
-          <span>展開詳細資訊</span>
-          <span className="accordion-chevron">⌄</span>
+          <span>專案詳細資料</span>
+          <span className="detail-plus">＋</span>
         </summary>
-        <div className="project-detail-body">
-          <div>
-            <small>當時的想法／草稿</small>
-            <p>{project.draft || '目前沒有補充內容。'}</p>
-          </div>
-          <div>
-            <small>最後更新</small>
-            <p>{project.updatedAt ? formatTime(project.updatedAt) : '尚無紀錄'}</p>
-          </div>
+        <div className="project-full-detail-body">
+          <section>
+            <h3>【專案流程表】</h3>
+            <pre>{project.flowText || buildFallbackFlow(project)}</pre>
+          </section>
+
+          <section className="project-detail-status">
+            <p><strong>目前步驟：</strong>{project.currentStepDetail || project.current || '尚未填寫'}</p>
+            <p><strong>本次要做：</strong>{project.currentTask || project.current || '尚未填寫'}</p>
+            <p><strong>下一步：</strong>{project.nextDetail || project.next || '尚未填寫'}</p>
+          </section>
         </div>
       </details>
 
-      <button className="secondary full" onClick={() => setEditing(true)}>編輯專案</button>
+      <button className="secondary full" onClick={() => setEditing(true)}>編輯專案資料</button>
     </Sheet>
   }
 
   return <Sheet title={project.id ? '編輯專案' : '新增專案'} onClose={onClose}>
-    <label>專案名稱<input value={draft.name} onChange={e => setDraft({ ...draft, name: e.target.value })} /></label>
-    <label>目前做到<textarea value={draft.current} onChange={e => setDraft({ ...draft, current: e.target.value })} /></label>
+    <label>項目名稱<input value={draft.name} onChange={e => setDraft({ ...draft, name: e.target.value })} /></label>
+    <label>目前步驟<textarea value={draft.current} onChange={e => setDraft({ ...draft, current: e.target.value })} /></label>
     <label>下一步<textarea value={draft.next} onChange={e => setDraft({ ...draft, next: e.target.value })} /></label>
     <label>我的草稿<textarea value={draft.draft} onChange={e => setDraft({ ...draft, draft: e.target.value })} /></label>
+
+    <details className="project-edit-detail">
+      <summary>
+        <span>編輯詳細專案資料</span>
+        <span className="detail-plus">＋</span>
+      </summary>
+      <div className="project-edit-detail-body">
+        <label>專案流程表
+          <textarea
+            className="flow-editor"
+            value={draft.flowText || ''}
+            onChange={e => setDraft({ ...draft, flowText: e.target.value })}
+            placeholder={'☑ 步驟1：…\n□ 步驟2：…\n□ 步驟3：…'}
+          />
+        </label>
+        <label>目前步驟（詳細）
+          <textarea value={draft.currentStepDetail || ''} onChange={e => setDraft({ ...draft, currentStepDetail: e.target.value })} />
+        </label>
+        <label>本次要做
+          <textarea value={draft.currentTask || ''} onChange={e => setDraft({ ...draft, currentTask: e.target.value })} />
+        </label>
+        <label>下一步（詳細）
+          <textarea value={draft.nextDetail || ''} onChange={e => setDraft({ ...draft, nextDetail: e.target.value })} />
+        </label>
+      </div>
+    </details>
+
     <label>進度<input type="range" min="0" max="100" value={draft.progress} onChange={e => setDraft({ ...draft, progress: Number(e.target.value) })} /><span>{draft.progress}%</span></label>
     <button className="primary full" disabled={!draft.name.trim()} onClick={() => onSave(draft)}>
       {project.id ? '儲存修改' : '建立專案'}
     </button>
   </Sheet>
+}
+
+function ProjectIndexRow({ label, value, strong = false }) {
+  return <div className="project-index-row">
+    <div className="project-index-label">
+      <span>{label}</span>
+      <span className="project-index-plus">＋</span>
+    </div>
+    <p className={strong ? 'strong' : ''}>{value}</p>
+  </div>
+}
+
+function buildFallbackFlow(project) {
+  return [
+    '□ ' + (project.current || '目前步驟尚未填寫'),
+    '□ ' + (project.next || '下一步尚未填寫'),
+  ].join('\n')
 }
 
 function Sheet({ title, onClose, children }) {
