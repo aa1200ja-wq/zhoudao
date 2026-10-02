@@ -774,3 +774,42 @@ textarea::placeholder, input::placeholder { color: var(--muted); opacity: .78; }
   background: var(--surface);
   color: var(--text);
 }
+
+
+/* Simplified prompt primary actions */
+.prompt-primary-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.prompt-primary-actions button {
+  min-height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 750;
+  cursor: pointer;
+}
+.prompt-primary-actions button.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.prompt-primary-actions .primary-action {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+.prompt-search-expanded {
+  grid-template-columns: 24px 1fr 32px;
+}
+.search-clear {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface-soft);
+  color: var(--muted);
+  cursor: pointer;
+}
