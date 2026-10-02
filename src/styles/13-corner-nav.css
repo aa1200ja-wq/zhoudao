@@ -1,0 +1,37 @@
+/* Fixed app corner navigation */
+.corner-nav-button,
+.home-corner-button {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface-soft);
+  color: var(--text);
+  cursor: pointer;
+}
+.corner-nav-button svg,
+.home-corner-button svg {
+  width: 22px;
+  height: 22px;
+}
+.home-corner-button {
+  position: absolute;
+  top: 22px;
+  z-index: 18;
+  border-color: rgba(255,255,255,.2);
+  background: rgba(10,14,20,.48);
+  color: #fff;
+  backdrop-filter: blur(12px);
+}
+.home-corner-left { left: 18px; }
+.home-corner-right { right: 18px; }
+.home-corner-button.active {
+  background: rgba(255,255,255,.92);
+  color: #111;
+}
+.page-header .corner-nav-button {
+  background: var(--surface-soft);
+  border-color: var(--border);
+}
