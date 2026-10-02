@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import AssistantSettings from './AssistantSettings'
 import { BOTTOM_NAV_OPTIONS, DEFAULT_BOTTOM_NAV, DEFAULT_SHORTCUTS, SHORTCUT_OPTIONS, resolveShortcut } from './navigation'
 
 const BACKGROUNDS = [
@@ -10,13 +11,13 @@ const BACKGROUNDS = [
 
 export default function Settings({
   assistant,
+  projects,
   preferences,
   onAssistantUpload,
-  onAssistantReset,
+  onAssistantChange,
   onPreferenceChange,
   onBackgroundUpload,
 }) {
-  const assistantInput = useRef(null)
   const backgroundInput = useRef(null)
   const shortcuts = preferences.shortcuts?.length === 4
     ? preferences.shortcuts
@@ -70,24 +71,12 @@ export default function Settings({
       </div>
     </details>
 
-    <details className="settings-card setting-accordion">
-      <summary>
-        <div><strong>首頁人物</strong><p>更換首頁小助手形象。</p></div>
-        <span className="accordion-chevron">⌄</span>
-      </summary>
-      <div className="accordion-body">
-        <div className="assistant-setting">
-          <div className="settings-avatar">
-            {assistant.image ? <img src={assistant.image} alt="目前首頁人物" /> : <span>小周</span>}
-          </div>
-          <div className="setting-actions">
-            <button className="secondary small" onClick={() => assistantInput.current?.click()}>更換圖片</button>
-            <button className="ghost small" onClick={onAssistantReset}>恢復預設</button>
-          </div>
-          <input ref={assistantInput} hidden type="file" accept="image/*" onChange={e => onAssistantUpload(e.target.files?.[0])} />
-        </div>
-      </div>
-    </details>
+    <AssistantSettings
+      assistant={assistant}
+      projects={projects}
+      onAssistantUpload={onAssistantUpload}
+      onAssistantChange={onAssistantChange}
+    />
 
     <details className="settings-card setting-accordion">
       <summary>
