@@ -24,6 +24,7 @@ export async function seedDb() {
       homeBackground: 'cream',
       backgroundImage: '',
       shortcuts: DEFAULT_SHORTCUTS,
+      mobilePreview: false,
     })
   }
 }
