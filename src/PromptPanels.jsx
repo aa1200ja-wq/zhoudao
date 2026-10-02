@@ -49,7 +49,7 @@ export function PromptEditor({ item, folders, onClose, onSave }) {
     setDraft({ ...draft, image: await toDataUrl(file) })
   }
 
-  return <Sheet title={draft.id ? '編輯提示詞' : '新增提示詞'} onClose={onClose}>
+  return <Sheet title={draft.id ? '編輯圖庫資料' : '新增圖庫資料'} onClose={onClose}>
     <label>名稱<input value={draft.title} onChange={e => setDraft({ ...draft, title: e.target.value })} /></label>
     <label>資料夾
       <select value={draft.folder || '未整理'} onChange={e => setDraft({ ...draft, folder: e.target.value })}>
@@ -73,7 +73,7 @@ export function PromptEditor({ item, folders, onClose, onSave }) {
         ...draft,
         tags: String(draft.tags).split(',').map(x => x.trim()).filter(Boolean),
       })}
-    >儲存提示詞</button>
+    >儲存資料</button>
   </Sheet>
 }
 
