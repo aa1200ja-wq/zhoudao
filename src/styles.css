@@ -42,6 +42,7 @@ button:disabled { opacity: .45; }
   align-items: center;
   box-shadow: 0 10px 28px #6d4d2c12;
 }
+.assistant-visual { position: relative; width: 108px; }
 .portrait {
   width: 108px;
   height: 132px;
@@ -53,7 +54,22 @@ button:disabled { opacity: .45; }
   cursor: pointer;
   color: white;
   font-weight: 800;
+  border: 0;
+  padding: 0;
   animation: breathe 4s ease-in-out infinite;
+}
+.change-photo {
+  position: absolute;
+  right: -5px;
+  bottom: -6px;
+  background: #fff;
+  border: 1px solid #dfd0be;
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #8f5d28;
+  cursor: pointer;
 }
 .portrait img { width: 100%; height: 100%; object-fit: cover; }
 @keyframes breathe { 50% { transform: translateY(-3px) scale(1.015); } }
