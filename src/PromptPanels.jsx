@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { BadgeCheck, Copy, Heart, Pencil, Plus, Save } from 'lucide-react'
+import { BadgeCheck, Copy, Heart, Pencil, Plus, Save, Sparkles } from 'lucide-react'
 import { SPECIAL_FILTERS } from './promptConfig'
 import Button from './ui/Button'
 import Sheet from './ui/Sheet'
+import { suggestGalleryMeta } from './ai/localAiTasks'
 
 export function PromptDetail({ item, folders, onClose, onEdit, onPatch }) {
   async function copyPrompt() {
@@ -50,12 +51,37 @@ export function PromptDetail({ item, folders, onClose, onEdit, onPatch }) {
   </Sheet>
 }
 
-export function PromptEditor({ item, folders, onClose, onSave }) {
+export function PromptEditor({ item, folders, onClose, onSave, aiAssist = true }) {
   const [draft, setDraft] = useState({
     ...emptyPrompt(folders[0]),
     ...item,
     tags: Array.isArray(item.tags) ? item.tags.join(', ') : (item.tags || ''),
   })
+  const [aiBusy, setAiBusy] = useState(false)
+  const [aiMessage, setAiMessage] = useState('')
+
+  async function assistMeta() {
+    setAiBusy(true)
+    setAiMessage('本機 AI 整理中…')
+    try {
+      const meta = await suggestGalleryMeta({
+        title: draft.title,
+        content: draft.content,
+        note: draft.note,
+        folder: draft.folder,
+      })
+      setDraft(current => ({
+        ...current,
+        title: meta.title || current.title,
+        tags: meta.tags.join(', '),
+      }))
+      setAiMessage('已更新名稱／標籤建議。')
+    } catch (error) {
+      setAiMessage(error?.message || String(error))
+    } finally {
+      setAiBusy(false)
+    }
+  }
 
   async function chooseImage(file) {
     if (!file) return
@@ -73,6 +99,12 @@ export function PromptEditor({ item, folders, onClose, onSave }) {
     <label>Prompt<textarea value={draft.content} onChange={e => setDraft({ ...draft, content: e.target.value })} /></label>
     <label>標籤（逗號分隔）<input value={draft.tags} onChange={e => setDraft({ ...draft, tags: e.target.value })} /></label>
     <label>備註<textarea value={draft.note || ''} onChange={e => setDraft({ ...draft, note: e.target.value })} /></label>
+    {aiAssist && <div className="ai-inline-assist">
+      <Button variant="soft" full icon={Sparkles} disabled={aiBusy} onClick={assistMeta}>
+        {aiBusy ? 'AI 整理中…' : 'AI 建議名稱／標籤'}
+      </Button>
+      {aiMessage && <small>{aiMessage}</small>}
+    </div>}
     <label className="upload">選擇圖片<input type="file" accept="image/*" onChange={e => chooseImage(e.target.files?.[0])} /></label>
     {draft.image && <img className="preview" src={draft.image} alt="預覽" />}
     <div className="editor-checks">
