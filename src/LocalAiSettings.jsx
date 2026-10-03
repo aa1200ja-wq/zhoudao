@@ -3,13 +3,10 @@ import {
   CheckCircle2,
   Cpu,
   RefreshCw,
-  Sparkles,
   Trash2,
   Unplug,
 } from 'lucide-react'
 import Button from './ui/Button'
-import LocalAiToolbox from './LocalAiToolbox'
-import LocalAiContextInspector from './LocalAiContextInspector'
 import {
   getAiState,
   getModelProfile,
@@ -106,7 +103,7 @@ export default function LocalAiSettings({ preferences, onPreferenceChange }) {
     <summary>
       <div>
         <strong>本機 AI</strong>
-        <p>Qwen 模型調度、檢查與自動功能。</p>
+        <p>Qwen 模型檢查與首頁台詞引擎。</p>
       </div>
       <span className="accordion-chevron">⌄</span>
     </summary>
@@ -153,7 +150,7 @@ export default function LocalAiSettings({ preferences, onPreferenceChange }) {
       <div className="local-ai-feature-list">
         <Feature
           label="首頁動態台詞"
-          detail="讀取目前專案與今日待辦，產生自然台詞。"
+          detail="點首頁人物時，在問候、專案提醒、待辦提醒之間隨機產生一句短台詞。"
           checked={preferences.aiHomeDialogue !== false}
           onChange={value => onPreferenceChange({ aiHomeDialogue: value })}
         />
@@ -163,22 +160,7 @@ export default function LocalAiSettings({ preferences, onPreferenceChange }) {
           checked={preferences.aiAutoStart !== false}
           onChange={value => onPreferenceChange({ aiAutoStart: value })}
         />
-        <Feature
-          label="專案草稿整理"
-          detail="把雜記整理成目前步驟、本次要做、下一步。"
-          checked={preferences.aiProjectAssist !== false}
-          onChange={value => onPreferenceChange({ aiProjectAssist: value })}
-        />
-        <Feature
-          label="圖庫標籤建議"
-          detail="依 Prompt 與備註產生名稱與標籤。"
-          checked={preferences.aiGalleryAssist !== false}
-          onChange={value => onPreferenceChange({ aiGalleryAssist: value })}
-        />
       </div>
-
-      <LocalAiContextInspector />
-      <LocalAiToolbox />
 
       <Button variant="danger" full icon={Trash2} onClick={clearModel} disabled={busy}>
         刪除周到本機 AI 模型
@@ -186,7 +168,7 @@ export default function LocalAiSettings({ preferences, onPreferenceChange }) {
 
       {message && <p className="local-ai-message">{message}</p>}
       <small className="local-ai-footnote">
-        Qwen2.5 0.5B｜{profile.quant}｜{profile.download}。模型只處理本機輕量工作。
+        Qwen2.5 0.5B｜{profile.quant}｜{profile.download}。目前只負責首頁短台詞。
       </small>
     </div>
   </details>
