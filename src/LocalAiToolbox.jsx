@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { ListFilter, Sparkles, Tags, WandSparkles } from 'lucide-react'
+import { Brain, ListFilter, Sparkles, Tags, WandSparkles } from 'lucide-react'
 import Button from './ui/Button'
 import {
+  answerWorkspaceQuestion,
   classifyCapture,
   organizeProjectDraft,
   suggestTags,
   summarizeText,
+  summarizeWorkspace,
 } from './ai/localAiTasks'
 
 export default function LocalAiToolbox() {
@@ -38,6 +40,11 @@ export default function LocalAiToolbox() {
           '下一步：' + (value.next || '—'),
         ].join('\n'))
       }
+      if (action === 'workspace') {
+        setResult(text.trim()
+          ? await answerWorkspaceQuestion(text)
+          : await summarizeWorkspace())
+      }
     } catch (error) {
       setResult(error?.message || String(error))
     } finally {
@@ -66,6 +73,9 @@ export default function LocalAiToolbox() {
         </Button>
         <Button variant="secondary" size="sm" icon={WandSparkles} disabled={busy} onClick={() => run('project')}>
           整理專案
+        </Button>
+        <Button variant="secondary" size="sm" icon={Brain} disabled={busy} onClick={() => run('workspace')}>
+          問周到資料
         </Button>
       </div>
 
