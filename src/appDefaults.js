@@ -25,6 +25,4 @@ export const DEFAULT_PREFS = {
   bottomNav: DEFAULT_BOTTOM_NAV,
   aiHomeDialogue: true,
   aiAutoStart: true,
-  aiProjectAssist: true,
-  aiGalleryAssist: true,
 }
