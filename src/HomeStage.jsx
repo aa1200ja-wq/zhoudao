@@ -1,88 +1,77 @@
 import { useEffect, useMemo, useState } from 'react'
 import { DEFAULT_SHORTCUTS, RIGHT_ACTIONS, resolveShortcut } from './navigation'
-import { generateHomeDialogue } from './ai/localAiTasks'
+import { generateHomeLine } from './ai/localAiTasks'
 import { isModelReady, loadModel, wasModelLoadedBefore } from './ai/localAiRuntime'
 
 export default function HomeStage({
   assistant,
   preferences,
   projects,
+  inbox,
   pending,
   onOpenPage,
 }) {
   const [leftOpen, setLeftOpen] = useState(false)
   const [rightOpen, setRightOpen] = useState(false)
   const [lineIndex, setLineIndex] = useState(0)
-  const [aiLines, setAiLines] = useState([])
+  const [aiLine, setAiLine] = useState('')
+  const [aiBusy, setAiBusy] = useState(false)
 
   const activeProject = useMemo(() => {
     if (assistant.activeProjectId) {
       const selected = projects.find(project => project.id === assistant.activeProjectId)
       if (selected) return selected
     }
-
     return projects.find(project => !isCompleted(project)) || projects[0] || null
   }, [assistant.activeProjectId, projects])
 
-  const dialogueLines = useMemo(() => {
-    if (aiLines.length) return aiLines
-
+  const fallbackLines = useMemo(() => {
     const lines = []
     if (assistant.dynamicDialogue && activeProject) {
       if (activeProject.current) lines.push(activeProject.name + '：目前 ' + activeProject.current)
-      if (activeProject.currentTask) lines.push(activeProject.name + '：這次要做 ' + activeProject.currentTask)
       if (activeProject.next) lines.push(activeProject.name + '：下一步 ' + activeProject.next)
     }
     if (pending > 0) lines.push('目前有 ' + pending + ' 項待同步。')
     lines.push(...(assistant.customLines || []))
     return lines.length ? lines : ['今天想先做什麼？']
-  }, [aiLines, assistant.customLines, assistant.dynamicDialogue, activeProject, pending])
+  }, [assistant.customLines, assistant.dynamicDialogue, activeProject, pending])
 
   useEffect(() => {
-    let cancelled = false
+    if (
+      preferences.aiHomeDialogue !== false &&
+      preferences.aiAutoStart !== false &&
+      wasModelLoadedBefore() &&
+      !isModelReady()
+    ) {
+      loadModel().catch(() => {})
+    }
+  }, [preferences.aiHomeDialogue, preferences.aiAutoStart])
 
-    async function refreshAiLines() {
-      if (preferences.aiHomeDialogue === false) {
-        setAiLines([])
-        return
-      }
-
-      try {
-        if (!isModelReady() && preferences.aiAutoStart !== false && wasModelLoadedBefore()) {
-          await loadModel()
-        }
-        if (!isModelReady()) return
-
-        const lines = await generateHomeDialogue({
-          assistantName: assistant.name || '小周',
-          pending,
-          timeOfDay: timeOfDay(),
-        })
-        if (!cancelled && lines.length) setAiLines(lines)
-      } catch (_) {
-        if (!cancelled) setAiLines([])
-      }
+  async function sayNext() {
+    if (preferences.aiHomeDialogue === false || !isModelReady() || aiBusy) {
+      setAiLine('')
+      setLineIndex(index => (index + 1) % fallbackLines.length)
+      return
     }
 
-    refreshAiLines()
-    return () => { cancelled = true }
-  }, [
-    preferences.aiHomeDialogue,
-    preferences.aiAutoStart,
-    assistant.name,
-    activeProject?.id,
-    activeProject?.updatedAt,
-    pending,
-  ])
-
-  useEffect(() => setLineIndex(0), [dialogueLines])
-
-  function sayNext() {
-    setLineIndex(index => (index + 1) % dialogueLines.length)
+    const seed = chooseSeed(activeProject, inbox)
+    setAiBusy(true)
+    try {
+      const next = await generateHomeLine({
+        ...seed,
+        timeOfDay: timeOfDay(),
+        lastLine: aiLine || fallbackLines[lineIndex % fallbackLines.length],
+      })
+      if (next) setAiLine(next)
+    } catch (_) {
+      setAiLine('')
+      setLineIndex(index => (index + 1) % fallbackLines.length)
+    } finally {
+      setAiBusy(false)
+    }
   }
 
-  const line = dialogueLines[lineIndex % dialogueLines.length]
-
+  const line = aiLine || fallbackLines[lineIndex % fallbackLines.length]
   const shortcuts = (preferences.shortcuts?.length === 4
     ? preferences.shortcuts
     : DEFAULT_SHORTCUTS).map(resolveShortcut)
@@ -93,7 +82,6 @@ export default function HomeStage({
 
   return <section className={'stage home-bg-' + preferences.homeBackground} style={bgStyle}>
     <div className="scene-glass" aria-hidden="true" />
-
 
     <header className="identity-strip">
       <span>◇</span><b>周到</b><small>{pending ? '待同步 ' + pending : '已儲存'}</small>
@@ -142,9 +130,27 @@ export default function HomeStage({
     <button className="dialogue-layer" onClick={sayNext}>
       <span className="dialogue-name">{assistant.name || '小周'}</span>
       <span className="dialogue-rule" />
-      <p>{line}</p>
+      <p>{aiBusy ? line : line}</p>
     </button>
   </section>
+}
+
+function chooseSeed(project, inbox = []) {
+  const todo = randomItem(inbox.filter(isTodoOpenToday))
+  const projectFacts = project ? [
+    project.currentTask && project.name + '｜本次要做：' + project.currentTask,
+    project.current && project.name + '｜目前：' + project.current,
+    project.next && project.name + '｜下一步：' + project.next,
+  ].filter(Boolean) : []
+
+  const choices = [{ type: 'greeting', fact: '' }, { type: 'greeting', fact: '' }]
+  projectFacts.forEach(fact => choices.push({ type: 'project', fact }))
+  if (todo) choices.push({ type: 'todo', fact: todo.text })
+  return randomItem(choices) || { type: 'greeting', fact: '' }
+}
+
+function randomItem(items) {
+  return items[Math.floor(Math.random() * items.length)]
 }
 
 function RailAction({ item, side, onClick }) {
@@ -157,6 +163,22 @@ function RailAction({ item, side, onClick }) {
 function isCompleted(project) {
   const status = String(project?.status || '')
   return status.includes('完成') || status.includes('結案')
+}
+
+function isTodoOpenToday(item) {
+  const today = dayKey()
+  if (item.completedDate === today || item.skippedDate === today) return false
+  if (item.completed && dayKey(item.updatedAt) === today) return false
+  return true
+}
+
+function dayKey(value = Date.now()) {
+  const date = new Date(value)
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0'),
+  ].join('-')
 }
 
 function timeOfDay() {
