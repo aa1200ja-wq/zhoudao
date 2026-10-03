@@ -1,24 +1,68 @@
 .pwa-install-panel {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
-.pwa-install-button {
+.pwa-status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.pwa-status-grid > div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+  padding: 11px 12px;
+  border-radius: 13px;
+  background: var(--surface-soft);
+}
+
+.pwa-status-grid span {
+  color: var(--muted);
+  font-size: var(--type-secondary);
+}
+
+.pwa-status-grid strong {
+  overflow: hidden;
+  color: var(--text);
+  font-size: var(--type-card-title);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pwa-action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.pwa-action-grid button,
+.pwa-install-panel > .primary {
   min-height: 48px;
   font-weight: 800;
 }
 
-.pwa-install-button:disabled {
+.pwa-action-grid button:disabled,
+.pwa-install-panel > .primary:disabled {
   opacity: .58;
   cursor: default;
 }
 
 .pwa-install-message {
   margin: 0;
-  padding: 10px 12px;
+  padding: 11px 12px;
   border-radius: 12px;
   background: var(--surface-soft);
   color: var(--muted);
   font-size: var(--type-secondary);
   line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 350px) {
+  .pwa-status-grid,
+  .pwa-action-grid {
+    grid-template-columns: 1fr;
+  }
 }
