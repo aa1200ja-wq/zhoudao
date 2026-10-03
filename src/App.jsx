@@ -165,7 +165,7 @@ export default function App() {
     await updatePreferences({ homeBackground: 'custom', backgroundImage: await toDataUrl(file) })
   }
 
-  return <main className={'app-shell ' + (preferences.darkMode ? 'dark ' : '') + (preferences.mobilePreview ? 'preview-mobile' : '')}>
+  return <main className={'app-shell ' + (page !== '首頁' ? 'inner-app ' : '') + (preferences.darkMode ? 'dark ' : '') + (preferences.mobilePreview ? 'preview-mobile' : '')}>
     {page === '首頁' ? <HomeStage
       assistant={assistant}
       preferences={preferences}
