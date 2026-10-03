@@ -23,4 +23,8 @@ export const DEFAULT_PREFS = {
   mobilePreview: false,
   promptFolders: ['真人', '情侶', '商品', '場景', '影片'],
   bottomNav: DEFAULT_BOTTOM_NAV,
+  aiHomeDialogue: true,
+  aiAutoStart: true,
+  aiProjectAssist: true,
+  aiGalleryAssist: true,
 }
