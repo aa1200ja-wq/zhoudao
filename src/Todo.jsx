@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Check, MoreHorizontal, Plus } from 'lucide-react'
+import Button from './ui/Button'
 
 export default function Todo({ items, onAdd, onUpdate, onDelete, onConvert }) {
   const [text, setText] = useState('')
@@ -61,11 +63,11 @@ export default function Todo({ items, onAdd, onUpdate, onDelete, onConvert }) {
         onChange={e => setText(e.target.value)}
         placeholder="新增每天都要提醒自己的事…"
       />
-      <button onClick={() => {
+      <Button variant="primary" full icon={Plus} onClick={() => {
         onAdd(text)
         setText('')
         setTab('today')
-      }}>新增每日事項</button>
+      }}>新增每日事項</Button>
     </div>
 
     <div className="todo-tabs">
@@ -89,7 +91,7 @@ export default function Todo({ items, onAdd, onUpdate, onDelete, onConvert }) {
           className={'todo-check ' + (item.completedToday ? 'checked' : '')}
           onClick={() => item.completedToday ? restoreToday(item) : complete(item)}
           aria-label={item.completedToday ? '恢復到今天' : '標記今天完成'}
-        >{item.completedToday ? '✓' : ''}</button>
+        >{item.completedToday && <Check aria-hidden="true" />}</button>
 
         <button className="todo-main" onClick={() => setMenuId(menuId === item.id ? null : item.id)}>
           <div className="todo-text-row">
@@ -99,7 +101,11 @@ export default function Todo({ items, onAdd, onUpdate, onDelete, onConvert }) {
           <small>{item.completedToday ? '今天已完成' : item.skippedToday ? '今天不用' : '每日事項'}</small>
         </button>
 
-        <button className="todo-more" onClick={() => setMenuId(menuId === item.id ? null : item.id)}>⋯</button>
+        <button
+          className="todo-more"
+          onClick={() => setMenuId(menuId === item.id ? null : item.id)}
+          aria-label="更多操作"
+        ><MoreHorizontal aria-hidden="true" /></button>
 
         {menuId === item.id && <div className="todo-menu">
           {!item.completedToday && !item.skippedToday && <button onClick={() => {
