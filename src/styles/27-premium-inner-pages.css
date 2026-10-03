@@ -1,0 +1,274 @@
+/* Premium treatment for todo, gallery, search and portfolio */
+.inner-app .todo-page,
+.inner-app .prompt-library,
+.inner-app .portfolio-page,
+.inner-app .global-search-page {
+  gap: 16px;
+}
+
+.inner-app .todo-composer {
+  padding: 12px;
+  border-radius: 22px;
+}
+
+.inner-app .todo-composer textarea {
+  min-height: 92px;
+  border: 0;
+  border-radius: 15px;
+  padding: 14px;
+  background: var(--surface-soft);
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.inner-app .todo-tabs {
+  gap: 4px;
+  padding: 4px;
+  border-radius: 17px;
+  background: var(--surface-soft);
+}
+
+.inner-app .todo-tabs button {
+  min-height: 43px;
+  border: 0;
+  border-radius: 13px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.inner-app .todo-tabs button.active {
+  border: 0;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 3px 10px rgba(43,36,30,.06);
+}
+
+.inner-app .todo-list {
+  gap: 11px;
+}
+
+.inner-app .todo-item {
+  min-height: 82px;
+  grid-template-columns: 38px minmax(0,1fr) 38px;
+  padding: 12px 10px 12px 13px;
+  border-radius: 20px;
+}
+
+.inner-app .todo-check {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-color: color-mix(in srgb, var(--border) 92%, transparent);
+  background: var(--surface-soft);
+}
+
+.inner-app .todo-check svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.4;
+}
+
+.inner-app .todo-main p {
+  font-size: 17px;
+  font-weight: 720;
+  line-height: 1.45;
+}
+
+.inner-app .todo-main small {
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.inner-app .todo-more {
+  display: grid;
+  place-items: center;
+  background: var(--surface-soft);
+}
+
+.inner-app .todo-more svg {
+  width: 19px;
+  height: 19px;
+}
+
+.inner-app .todo-menu {
+  width: 176px;
+  padding: 7px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  box-shadow: 0 16px 38px rgba(35,30,26,.16);
+  backdrop-filter: blur(20px);
+}
+
+.inner-app .prompt-primary-actions {
+  gap: 8px;
+}
+
+.inner-app .prompt-primary-actions button {
+  min-width: 0;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-color: color-mix(in srgb, var(--border) 84%, transparent);
+  border-radius: 15px;
+  background: var(--surface);
+  box-shadow: var(--ui-shadow-soft);
+}
+
+.inner-app .prompt-primary-actions button svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+}
+
+.inner-app .prompt-primary-actions .primary-action {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.inner-app .prompt-search,
+.inner-app .global-search-box {
+  min-height: 54px;
+  border-color: color-mix(in srgb, var(--border) 80%, transparent);
+  border-radius: 17px;
+  background: var(--surface);
+  box-shadow: var(--ui-shadow-soft);
+}
+
+.inner-app .prompt-search > svg,
+.inner-app .global-search-box > svg {
+  width: 19px;
+  height: 19px;
+  color: var(--muted);
+}
+
+.inner-app .search-clear svg,
+.inner-app .global-search-box button svg {
+  width: 17px;
+  height: 17px;
+}
+
+.inner-app .folder-strip {
+  gap: 7px;
+  padding-bottom: 7px;
+}
+
+.inner-app .folder-strip button {
+  min-height: 36px;
+  border-color: color-mix(in srgb, var(--border) 82%, transparent);
+  background: var(--surface);
+  box-shadow: 0 2px 8px rgba(43,36,30,.035);
+}
+
+.inner-app .folder-strip button.active {
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
+  background: var(--accent-soft);
+}
+
+.inner-app .prompt-grid,
+.inner-app .portfolio-grid {
+  gap: 12px;
+}
+
+.inner-app .prompt-tile,
+.inner-app .portfolio-card {
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.inner-app .prompt-thumb,
+.inner-app .portfolio-thumb {
+  background: var(--surface-soft);
+}
+
+.inner-app .prompt-thumb.no-image > svg,
+.inner-app .portfolio-empty > svg,
+.inner-app .prompt-empty > svg {
+  width: 34px;
+  height: 34px;
+  color: var(--accent);
+  stroke-width: 1.7;
+}
+
+.inner-app .favorite-badge {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-color: rgba(255,255,255,.52);
+  background: rgba(20,18,16,.38);
+}
+
+.inner-app .favorite-badge svg {
+  width: 18px;
+  height: 18px;
+}
+
+.inner-app .favorite-badge.active svg {
+  fill: currentColor;
+}
+
+.inner-app .prompt-tile-copy,
+.inner-app .portfolio-copy {
+  padding: 12px;
+}
+
+.inner-app .prompt-tile-copy strong,
+.inner-app .portfolio-copy strong {
+  font-weight: 800;
+}
+
+.inner-app .global-search-box {
+  grid-template-columns: 24px minmax(0,1fr) 34px;
+  padding: 0 14px;
+}
+
+.inner-app .search-result-list {
+  gap: 10px;
+}
+
+.inner-app .search-result-card {
+  gap: 5px;
+  padding: 15px 16px;
+  border-radius: 19px;
+}
+
+.inner-app .search-result-card > span {
+  font-size: 12px;
+}
+
+.inner-app .search-result-card strong {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.inner-app .search-result-card small {
+  font-size: 14px;
+}
+
+.inner-app .portfolio-toolbar {
+  padding: 3px 1px;
+}
+
+.inner-app .portfolio-toolbar strong {
+  font-weight: 850;
+}
+
+.inner-app .portfolio-actions {
+  border-top-color: color-mix(in srgb, var(--border) 72%, transparent);
+}
+
+@media (max-width: 360px) {
+  .inner-app .prompt-primary-actions {
+    grid-template-columns: repeat(3, minmax(0,1fr));
+  }
+
+  .inner-app .prompt-primary-actions button {
+    gap: 4px;
+    padding-inline: 5px;
+    font-size: 14px;
+  }
+}
