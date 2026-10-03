@@ -8,6 +8,7 @@ import {
   Unplug,
 } from 'lucide-react'
 import Button from './ui/Button'
+import LocalAiToolbox from './LocalAiToolbox'
 import {
   getAiState,
   getModelProfile,
@@ -170,6 +171,8 @@ export default function LocalAiSettings({ preferences, onPreferenceChange }) {
           onChange={value => onPreferenceChange({ aiGalleryAssist: value })}
         />
       </div>
+
+      <LocalAiToolbox />
 
       <Button variant="danger" full icon={Trash2} onClick={clearModel} disabled={busy}>
         刪除周到本機 AI 模型
