@@ -1,0 +1,49 @@
+/* Project modal hierarchy: label quiet, value dominant */
+.inner-app .project-info-accordion summary strong {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: .04em;
+}
+
+.inner-app .project-info-accordion summary p {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 7px 0 0;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 850;
+  line-height: 1.35;
+  letter-spacing: -.015em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inner-app .project-info-accordion summary {
+  min-height: 92px;
+  align-items: center;
+}
+
+.inner-app .project-info-accordion summary > div {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.inner-app .project-info-accordion .accordion-chevron {
+  color: var(--muted);
+  font-size: 16px;
+}
+
+@media (max-width: 380px) {
+  .inner-app .project-info-accordion summary strong {
+    font-size: 12px;
+  }
+
+  .inner-app .project-info-accordion summary p {
+    font-size: 18px;
+  }
+}
