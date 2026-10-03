@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { Archive, ArchiveRestore, Pencil, Save } from 'lucide-react'
+import Button from './ui/Button'
+import Sheet from './ui/Sheet'
 
 export function ProjectModal({ project, onClose, onSave, onArchive }) {
   const [editing, setEditing] = useState(!project.id)
@@ -69,13 +72,17 @@ export function ProjectModal({ project, onClose, onSave, onArchive }) {
       </div>
 
       <div className="project-modal-actions">
-        <button className="secondary full" onClick={() => setEditing(true)}>編輯專案資料</button>
-        <button
-          className={isArchived(project) ? 'secondary full' : 'primary full'}
+        <Button variant="secondary" full icon={Pencil} onClick={() => setEditing(true)}>
+          編輯專案資料
+        </Button>
+        <Button
+          variant={isArchived(project) ? 'secondary' : 'primary'}
+          full
+          icon={isArchived(project) ? ArchiveRestore : Archive}
           onClick={() => onArchive(project, !isArchived(project))}
         >
           {isArchived(project) ? '恢復進行中' : '標記完成並封存'}
-        </button>
+        </Button>
       </div>
     </Sheet>
   }
@@ -144,9 +151,15 @@ export function ProjectModal({ project, onClose, onSave, onArchive }) {
     </details>
 
     <label>進度<input type="range" min="0" max="100" value={draft.progress} onChange={e => setDraft({ ...draft, progress: Number(e.target.value) })} /><span>{draft.progress}%</span></label>
-    <button className="primary full" disabled={!draft.name.trim()} onClick={() => onSave(draft)}>
+    <Button
+      variant="primary"
+      full
+      icon={Save}
+      disabled={!draft.name.trim()}
+      onClick={() => onSave(draft)}
+    >
       {project.id ? '儲存修改' : '建立專案'}
-    </button>
+    </Button>
   </Sheet>
 }
 
@@ -186,16 +199,4 @@ function formatTime(value) {
     hour: '2-digit',
     minute: '2-digit',
   })
-}
-
-function Sheet({ title, onClose, children }) {
-  return <div className="overlay" onMouseDown={onClose}>
-    <div className="modal" onMouseDown={e => e.stopPropagation()}>
-      <div className="row">
-        <h2>{title}</h2>
-        <button className="icon" onClick={onClose}>×</button>
-      </div>
-      {children}
-    </div>
-  </div>
 }
