@@ -1,0 +1,190 @@
+/* Premium inner-app foundation inspired by Origin UI conventions */
+.app-shell.inner-app {
+  --page: #f4f1ec;
+  --surface: #fcfbf8;
+  --surface-soft: #efebe5;
+  --text: #211e1b;
+  --muted: #756f68;
+  --border: #dfdad2;
+  --accent: #80684f;
+  --accent-soft: #ece4da;
+  --ui-shadow: 0 12px 34px rgba(43, 36, 30, .075);
+  --ui-shadow-soft: 0 5px 18px rgba(43, 36, 30, .05);
+  background: var(--page);
+}
+
+.app-shell.inner-app.dark {
+  --page: #151617;
+  --surface: #1d1f20;
+  --surface-soft: #252728;
+  --text: #f2efea;
+  --muted: #aaa39a;
+  --border: #343638;
+  --accent: #c8aa84;
+  --accent-soft: #332d26;
+}
+
+.inner-app .page-header {
+  min-height: 82px;
+  padding: 18px 18px 14px;
+  background: color-mix(in srgb, var(--page) 86%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  backdrop-filter: blur(22px) saturate(1.15);
+}
+
+.inner-app .page-header p {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .16em;
+}
+
+.inner-app .page-header h1 {
+  margin-top: 3px;
+  color: var(--text);
+  font-weight: 850;
+  letter-spacing: -.025em;
+}
+
+.inner-app .corner-nav-button {
+  width: 42px;
+  height: 42px;
+  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  box-shadow: 0 4px 14px rgba(43, 36, 30, .05);
+}
+
+.inner-app .corner-nav-button:active {
+  transform: scale(.96);
+}
+
+.inner-app .page {
+  background:
+    radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--accent) 4%, transparent), transparent 32%),
+    var(--page);
+}
+
+.inner-app .settings-card,
+.inner-app .project-card,
+.inner-app .composer,
+.inner-app .portfolio-card,
+.inner-app .prompt-tile,
+.inner-app .search-result-card,
+.inner-app .todo-item,
+.inner-app .ui-card {
+  border-color: color-mix(in srgb, var(--border) 78%, transparent);
+  background: var(--surface);
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.55),
+    var(--ui-shadow-soft);
+}
+
+.inner-app.dark .settings-card,
+.inner-app.dark .project-card,
+.inner-app.dark .composer,
+.inner-app.dark .portfolio-card,
+.inner-app.dark .prompt-tile,
+.inner-app.dark .search-result-card,
+.inner-app.dark .todo-item,
+.inner-app.dark .ui-card {
+  box-shadow: 0 8px 22px rgba(0,0,0,.16);
+}
+
+.inner-app .ui-button,
+.inner-app .primary,
+.inner-app .secondary,
+.inner-app .ghost {
+  font-weight: 800;
+  letter-spacing: -.01em;
+}
+
+.inner-app .ui-button-primary,
+.inner-app .primary {
+  border-color: color-mix(in srgb, var(--accent) 88%, #000);
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 92%, #fff 8%),
+      var(--accent));
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.22),
+    0 7px 17px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.inner-app .ui-button-secondary,
+.inner-app .secondary {
+  border-color: color-mix(in srgb, var(--border) 86%, transparent);
+  background: color-mix(in srgb, var(--surface) 96%, var(--page));
+  box-shadow: inset 0 1px rgba(255,255,255,.48);
+}
+
+.inner-app input,
+.inner-app textarea,
+.inner-app select {
+  border-color: color-mix(in srgb, var(--border) 86%, transparent);
+  background: var(--surface-soft);
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+.inner-app input:focus,
+.inner-app textarea:focus,
+.inner-app select:focus {
+  outline: 0;
+  border-color: color-mix(in srgb, var(--accent) 48%, var(--border));
+  background: var(--surface);
+  box-shadow: var(--ui-focus);
+}
+
+.inner-app .inner-nav {
+  bottom: max(10px, env(safe-area-inset-bottom));
+  border-color: color-mix(in srgb, var(--border) 76%, transparent);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  box-shadow: 0 14px 38px rgba(35, 30, 26, .14);
+  backdrop-filter: blur(24px) saturate(1.2);
+}
+
+.inner-app .inner-nav button {
+  color: var(--muted);
+  transition: color .14s ease, background .14s ease, transform .14s ease;
+}
+
+.inner-app .inner-nav button:active {
+  transform: scale(.96);
+}
+
+.inner-app .inner-nav button.active {
+  background: color-mix(in srgb, var(--accent-soft) 78%, transparent);
+  color: var(--accent);
+}
+
+.inner-app .modal,
+.inner-app .ui-sheet {
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  border-bottom: 0;
+  border-radius: 30px 30px 0 0;
+  background: var(--surface);
+  box-shadow: 0 -18px 54px rgba(26, 22, 19, .18);
+}
+
+.inner-app .ui-sheet-header {
+  padding-bottom: 4px;
+}
+
+.inner-app .ui-sheet-header h2 {
+  font-weight: 850;
+  letter-spacing: -.02em;
+}
+
+.inner-app .ui-icon-button {
+  border: 1px solid color-mix(in srgb, var(--border) 76%, transparent);
+  background: var(--surface-soft);
+}
+
+@media (max-width: 620px) {
+  .inner-app .page {
+    padding-top: 12px;
+  }
+
+  .inner-app .page-header h1 {
+    font-size: 30px;
+  }
+}
