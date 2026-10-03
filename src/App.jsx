@@ -177,6 +177,7 @@ export default function App() {
       assistant={assistant}
       preferences={preferences}
       projects={projects}
+      inbox={inbox}
       pending={pending}
       onOpenPage={openPage}
     /> : <>
