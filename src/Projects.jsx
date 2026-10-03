@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Card from './ui/Card'
 
 export function Projects({ projects, onEdit, onAdd }) {
   const [tab, setTab] = useState('active')
@@ -47,7 +48,7 @@ function ProjectCard({ project, onEdit }) {
   const archived = isArchived(project)
   const progress = Number(project.progress || 0)
 
-  return <button className="project-card" onClick={() => onEdit(project)}>
+  return <Card as="button" interactive className="project-card" onClick={() => onEdit(project)}>
     <div className="project-card-top">
       <div>
         <span className="project-status-badge">{archived ? '已完成' : (project.status || '進行中')}</span>
@@ -74,7 +75,7 @@ function ProjectCard({ project, onEdit }) {
         <p>{archived ? '已封存，可隨時查看' : (project.next || '尚未填寫')}</p>
       </div>
     </div>
-  </button>
+  </Card>
 }
 
 function isArchived(project) {
