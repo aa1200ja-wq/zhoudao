@@ -1,0 +1,73 @@
+/* Keep mobile bottom navigation pinned while page content scrolls */
+@media (max-width: 620px) {
+  html,
+  body,
+  #root {
+    height: 100%;
+    min-height: 100%;
+    overflow: hidden;
+  }
+
+  .app-shell.inner-app {
+    position: relative;
+    width: 100%;
+    height: 100dvh;
+    min-height: 100dvh;
+    overflow: hidden;
+  }
+
+  .inner-app .page-header {
+    position: relative;
+    top: auto;
+    z-index: 10;
+    height: 82px;
+  }
+
+  .inner-app .page {
+    height: calc(100dvh - 82px);
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(118px + env(safe-area-inset-bottom));
+  }
+
+  .inner-app .inner-nav {
+    position: absolute !important;
+    left: 12px;
+    right: 12px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    z-index: 100;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    transform: none !important;
+  }
+}
+
+/* Desktop phone-preview should behave like the real mobile shell. */
+@media (min-width: 621px) {
+  .app-shell.preview-mobile.inner-app {
+    position: relative;
+    height: 844px;
+    min-height: 844px;
+    overflow: hidden;
+  }
+
+  .app-shell.preview-mobile.inner-app .page {
+    height: calc(844px - 82px);
+    min-height: 0;
+    overflow-y: auto;
+    padding-bottom: 118px;
+  }
+
+  .app-shell.preview-mobile.inner-app .inner-nav {
+    position: absolute !important;
+    left: 12px;
+    right: 12px;
+    bottom: 10px;
+    width: auto;
+    transform: none !important;
+  }
+}
