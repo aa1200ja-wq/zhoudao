@@ -1,0 +1,97 @@
+/* Project hierarchy + text-only bottom navigation refinement */
+.project-card-top strong {
+  font-size: 20px;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.project-status-badge {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.project-progress-row {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.project-card-copy {
+  gap: 11px;
+}
+
+.project-card-copy > div {
+  padding: 13px 14px;
+}
+
+.project-card-copy small {
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+
+.project-card-copy p {
+  margin: 0;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 720;
+  line-height: 1.5;
+}
+
+.project-overview-card strong {
+  font-weight: 850;
+}
+
+.project-overview-card p {
+  font-size: 16px;
+}
+
+.project-list-heading h2 {
+  font-weight: 850;
+}
+
+.project-list-heading small {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.inner-nav {
+  padding: 6px;
+}
+
+.inner-nav button {
+  min-width: 0;
+  min-height: 54px;
+  display: grid;
+  place-items: center;
+  padding: 8px 3px;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.inner-nav button.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+@media (max-width: 390px) {
+  .inner-nav button {
+    font-size: 14px;
+  }
+
+  .project-card-copy p {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 350px) {
+  .inner-nav button {
+    font-size: 13px;
+    padding-left: 1px;
+    padding-right: 1px;
+  }
+}
