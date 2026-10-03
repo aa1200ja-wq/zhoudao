@@ -58,8 +58,43 @@ function setState(patch) {
   listeners.forEach(listener => listener(snapshot))
 }
 
-function setupCpuWorker() {
-  cpuWorker = new Worker(new URL('./cpu-worker.js', import.meta.url), { type: 'module' })
+function workerUrl(file) {
+  return import.meta.env.BASE_URL + 'ai/' + file
+}
+
+function waitForWorkerReady(worker, label) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      cleanup()
+      reject(new Error(label + ' 啟動逾時，請重新載入 App 後再試。'))
+    }, 20000)
+
+    function onMessage(event) {
+      if (event.data?.type !== 'zhoudao-worker-ready') return
+      cleanup()
+      resolve(true)
+    }
+
+    function onError(event) {
+      cleanup()
+      reject(new Error(label + ' 載入失敗：' + (event.message || '未知錯誤')))
+    }
+
+    function cleanup() {
+      clearTimeout(timer)
+      worker.removeEventListener('message', onMessage)
+      worker.removeEventListener('error', onError)
+    }
+
+    worker.addEventListener('message', onMessage)
+    worker.addEventListener('error', onError)
+  })
+}
+
+async function setupCpuWorker() {
+  setState({ message: '啟動 CPU/WASM Worker…' })
+  cpuWorker = new Worker(workerUrl('cpu-worker.js'), { type: 'module' })
+  const ready = waitForWorkerReady(cpuWorker, 'CPU/WASM Worker')
   cpuWorker.onmessage = ({ data }) => {
     if (data.type === 'progress') {
       const raw = Number(data.report?.progress ?? 0)
@@ -81,6 +116,7 @@ function setupCpuWorker() {
       if (cpuChat) { cpuChat.reject(error); cpuChat = null }
     }
   }
+  await ready
 }
 
 function cpuProgressText(report) {
@@ -95,7 +131,8 @@ function cpuProgressText(report) {
 
 async function loadCpuModel() {
   if (cpuWorker && backend === 'wasm') return true
-  if (!cpuWorker) setupCpuWorker()
+  if (!cpuWorker) await setupCpuWorker()
+  setState({ message: '載入 Qwen CPU/WASM 模型…' })
   return new Promise((resolve, reject) => {
     cpuLoad = { resolve, reject }
     cpuWorker.postMessage({ type: 'load' })
@@ -104,8 +141,12 @@ async function loadCpuModel() {
 
 async function loadGpuModel() {
   if (gpuEngine) return gpuEngine
+  setState({ message: '載入 WebLLM 核心…' })
   const webllm = await getWebLLM()
-  gpuWorker = new Worker(new URL('./gpu-worker.js', import.meta.url), { type: 'module' })
+  setState({ message: '啟動 GPU Worker…' })
+  gpuWorker = new Worker(workerUrl('gpu-worker.js'), { type: 'module' })
+  await waitForWorkerReady(gpuWorker, 'GPU Worker')
+  setState({ message: '建立 Qwen WebGPU 引擎…' })
   const appConfig = { ...webllm.prebuiltAppConfig, cacheBackend: 'cache' }
   gpuEngine = await webllm.CreateWebWorkerMLCEngine(gpuWorker, GPU_MODEL_ID, {
     appConfig,
