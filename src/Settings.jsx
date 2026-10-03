@@ -3,6 +3,7 @@ import AssistantSettings from './AssistantSettings'
 import BottomNavOrder from './BottomNavOrder'
 import PwaInstall from './PwaInstall'
 import ActivityLogSettings from './ActivityLogSettings'
+import LocalAiSettings from './LocalAiSettings'
 import { DEFAULT_BOTTOM_NAV, DEFAULT_SHORTCUTS, SHORTCUT_OPTIONS, resolveShortcut } from './navigation'
 
 const BACKGROUNDS = [
@@ -134,6 +135,10 @@ export default function Settings({
     </details>
 
     <p className="settings-section-label">系統</p>
+    <LocalAiSettings
+      preferences={preferences}
+      onPreferenceChange={onPreferenceChange}
+    />
     <ActivityLogSettings />
   </div>
 }
