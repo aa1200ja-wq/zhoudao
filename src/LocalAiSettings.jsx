@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import Button from './ui/Button'
 import LocalAiToolbox from './LocalAiToolbox'
+import LocalAiContextInspector from './LocalAiContextInspector'
 import {
   getAiState,
   getModelProfile,
@@ -176,6 +177,7 @@ export default function LocalAiSettings({ preferences, onPreferenceChange }) {
         />
       </div>
 
+      <LocalAiContextInspector />
       <LocalAiToolbox />
 
       <Button variant="danger" full icon={Trash2} onClick={clearModel} disabled={busy}>
