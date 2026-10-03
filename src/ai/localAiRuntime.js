@@ -48,7 +48,13 @@ export function getModelProfile() {
 }
 
 async function getWebLLM() {
-  if (!moduleRef) moduleRef = await import(/* @vite-ignore */ WEBLLM_URL)
+  if (!moduleRef) {
+    moduleRef = await withTimeout(
+      import(/* @vite-ignore */ WEBLLM_URL),
+      45000,
+      'WebLLM 核心載入逾時，請確認網路後重試。',
+    )
+  }
   return moduleRef
 }
 
@@ -60,6 +66,15 @@ function setState(patch) {
 
 function workerUrl(file) {
   return import.meta.env.BASE_URL + 'ai/' + file
+}
+
+function withTimeout(promise, ms, message) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error(message)), ms)
+    }),
+  ])
 }
 
 function waitForWorkerReady(worker, label) {
