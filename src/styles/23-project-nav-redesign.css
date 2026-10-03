@@ -1,0 +1,247 @@
+/* Projects + floating bottom navigation */
+.project-overview-card {
+  min-height: 138px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 52px;
+  align-items: end;
+  gap: 14px;
+  padding: 20px 18px;
+}
+
+.project-overview-card strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--text);
+  font-size: var(--type-section-title);
+}
+
+.project-overview-card p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: var(--type-secondary);
+  line-height: 1.5;
+}
+
+.project-add-button {
+  width: 52px;
+  height: 52px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 28px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--accent) 26%, transparent);
+}
+
+.project-tabs {
+  margin-top: 0;
+  padding: 4px;
+  gap: 4px;
+  border-radius: 18px;
+  background: var(--surface-soft);
+}
+
+.project-tabs button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+}
+
+.project-tabs button.active {
+  border: 0;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--ui-shadow-soft);
+}
+
+.project-list-section {
+  margin-top: 2px;
+}
+
+.project-list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 4px 2px 10px;
+}
+
+.project-list-heading h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--type-section-title);
+}
+
+.project-list-heading small {
+  color: var(--muted);
+  font-size: var(--type-secondary);
+}
+
+.project-card-stack {
+  gap: 12px;
+}
+
+.project-card {
+  width: 100%;
+  min-width: 0;
+  padding: 17px;
+  border: 0;
+  border-radius: var(--ui-radius-xl);
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  box-shadow: var(--ui-shadow);
+}
+
+.project-card-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 28px;
+  align-items: center;
+  gap: 10px;
+}
+
+.project-card-top > div {
+  min-width: 0;
+}
+
+.project-status-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: var(--type-meta);
+  font-weight: 800;
+}
+
+.project-card-top strong {
+  display: block;
+  margin-top: 9px;
+  overflow: hidden;
+  color: var(--text);
+  font-size: var(--type-card-title);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.project-card-arrow {
+  color: var(--muted);
+  font-size: 28px;
+}
+
+.project-progress-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: var(--type-secondary);
+}
+
+.project-progress-row strong {
+  color: var(--text);
+}
+
+.project-card-progress {
+  height: 6px;
+  margin: 7px 0 15px;
+}
+
+.project-card-copy {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.project-card-copy > div {
+  padding: 11px 12px;
+  border-radius: 14px;
+  background: var(--surface-soft);
+}
+
+.project-card-copy small {
+  display: block;
+  color: var(--muted);
+  font-size: var(--type-meta);
+  font-weight: 750;
+}
+
+.project-card-copy p {
+  margin: 4px 0 0;
+  color: var(--text);
+  font-size: var(--type-body);
+  line-height: 1.45;
+}
+
+.inner-nav {
+  left: 50%;
+  bottom: max(10px, env(safe-area-inset-bottom));
+  width: min(446px, calc(100% - 24px));
+  padding: 7px;
+  gap: 2px;
+  border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: 0 12px 36px rgba(28, 24, 20, .14);
+}
+
+.inner-nav button {
+  min-width: 0;
+  min-height: 58px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 3px;
+  padding: 5px 2px;
+  border-radius: 17px;
+}
+
+.inner-nav button.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.inner-nav-icon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.inner-nav-label {
+  overflow: hidden;
+  width: 100%;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 360px) {
+  .page {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .project-overview-card {
+    grid-template-columns: minmax(0, 1fr) 46px;
+    padding: 17px 15px;
+  }
+
+  .project-add-button {
+    width: 46px;
+    height: 46px;
+  }
+
+  .inner-nav {
+    width: calc(100% - 14px);
+  }
+
+  .inner-nav-label {
+    font-size: 11px;
+  }
+}
