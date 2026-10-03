@@ -1,17 +1,21 @@
 import { generate, isModelReady } from './localAiRuntime'
+import { buildLocalAiContext, formatLocalAiContext } from './localAiContext'
 
 const SYSTEM = '你是周到 PWA 裡的本機小型 AI。使用台灣繁體中文，回答精簡，不要捏造未提供的事實。'
 
-export async function generateHomeDialogue(context) {
+export async function generateHomeDialogue(extra = {}) {
+  const context = await buildLocalAiContext(extra)
   const prompt = [
-    '請根據以下真實資料，產生 4 句彼此不同的首頁助理短台詞。',
-    '規則：每句 12～32 個中文字；自然、像熟悉使用者的助理；可問候、提醒、鼓勵或提到目前工作。',
-    '禁止編造不存在的專案或待辦。不要編號，每行一句。',
+    '你現在可以看到周到裡的真實工作資料。',
+    '請先讀完「目前專案、我的草稿、專案流程表、目前步驟、下一步、待辦、最近變更」。',
+    '再產生 4 句彼此不同的首頁助理短台詞。',
+    '至少 2 句必須明確引用資料中的具體專案、步驟、草稿內容或待辦，不可以全部只講一般問候或鼓勵。',
+    '每句 12～38 個中文字，自然、簡短，不要編號，不要捏造資料。',
     '',
-    contextText(context),
+    formatLocalAiContext(context),
   ].join('\n')
 
-  const output = await run(prompt, { maxTokens: 150, temperature: .82 })
+  const output = await run(prompt, { maxTokens: 190, temperature: .72 })
   const lines = output
     .split('\n')
     .map(line => line.replace(/^[-*\d.、)\s]+/, '').trim())
@@ -97,6 +101,27 @@ export async function suggestGalleryMeta({ title, content, note, folder }) {
   return { title: nextTitle, tags }
 }
 
+export async function answerWorkspaceQuestion(question) {
+  const context = await buildLocalAiContext()
+  const prompt = [
+    '請只根據下面的周到資料回答問題。',
+    '如果資料裡沒有答案，就直接說「目前資料裡沒有」。不要猜。',
+    '',
+    formatLocalAiContext(context),
+    '',
+    '【問題】',
+    question || '請告訴我目前最重要的專案進度與未完成待辦。',
+  ].join('\n')
+
+  return run(prompt, { maxTokens: 180, temperature: .25 })
+}
+
+export async function summarizeWorkspace() {
+  return answerWorkspaceQuestion(
+    '用 4 點以內告訴我：目前主要專案做到哪、本次要做什麼、下一步是什麼、今天有哪些未完成待辦。',
+  )
+}
+
 export async function testLocalAi() {
   const output = await run('只回答：周到本機 AI 正常', {
     maxTokens: 20,
@@ -118,19 +143,4 @@ function pick(output, label) {
     .split('\n')
     .find(item => item.trim().startsWith(label + '：') || item.trim().startsWith(label + ':'))
   return line ? line.replace(new RegExp('^\\s*' + label + '[：:]\\s*'), '').trim() : ''
-}
-
-function contextText(context) {
-  const project = context.project
-  const todos = (context.todos || []).slice(0, 5)
-  return [
-    '時間：' + (context.timeOfDay || '現在'),
-    '助理名稱：' + (context.assistantName || '小周'),
-    project ? '目前專案：' + project.name : '目前專案：無',
-    project?.current ? '目前步驟：' + project.current : '',
-    project?.currentTask ? '本次要做：' + project.currentTask : '',
-    project?.next ? '下一步：' + project.next : '',
-    todos.length ? '今天未完成：' + todos.map(item => item.text).join('、') : '今天未完成：無',
-    context.pending ? '待同步：' + context.pending + ' 項' : '',
-  ].filter(Boolean).join('\n')
 }
