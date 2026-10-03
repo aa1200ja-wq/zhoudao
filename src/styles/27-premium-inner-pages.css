@@ -1,8 +1,6 @@
-/* Premium treatment for todo, gallery, search and portfolio */
+/* Premium treatment for todo and gallery */
 .inner-app .todo-page,
-.inner-app .prompt-library,
-.inner-app .portfolio-page,
-.inner-app .global-search-page {
+.inner-app .prompt-library {
   gap: 16px;
 }
 
@@ -129,8 +127,7 @@
   background: var(--accent);
 }
 
-.inner-app .prompt-search,
-.inner-app .global-search-box {
+.inner-app .prompt-search {
   min-height: 54px;
   border-color: color-mix(in srgb, var(--border) 80%, transparent);
   border-radius: 17px;
@@ -138,15 +135,13 @@
   box-shadow: var(--ui-shadow-soft);
 }
 
-.inner-app .prompt-search > svg,
-.inner-app .global-search-box > svg {
+.inner-app .prompt-search > svg {
   width: 19px;
   height: 19px;
   color: var(--muted);
 }
 
-.inner-app .search-clear svg,
-.inner-app .global-search-box button svg {
+.inner-app .search-clear svg {
   width: 17px;
   height: 17px;
 }
@@ -168,24 +163,20 @@
   background: var(--accent-soft);
 }
 
-.inner-app .prompt-grid,
-.inner-app .portfolio-grid {
+.inner-app .prompt-grid {
   gap: 12px;
 }
 
-.inner-app .prompt-tile,
-.inner-app .portfolio-card {
+.inner-app .prompt-tile {
   overflow: hidden;
   border-radius: 20px;
 }
 
-.inner-app .prompt-thumb,
-.inner-app .portfolio-thumb {
+.inner-app .prompt-thumb {
   background: var(--surface-soft);
 }
 
 .inner-app .prompt-thumb.no-image > svg,
-.inner-app .portfolio-empty > svg,
 .inner-app .prompt-empty > svg {
   width: 34px;
   height: 34px;
@@ -211,54 +202,12 @@
   fill: currentColor;
 }
 
-.inner-app .prompt-tile-copy,
-.inner-app .portfolio-copy {
+.inner-app .prompt-tile-copy {
   padding: 12px;
 }
 
-.inner-app .prompt-tile-copy strong,
-.inner-app .portfolio-copy strong {
+.inner-app .prompt-tile-copy strong {
   font-weight: 800;
-}
-
-.inner-app .global-search-box {
-  grid-template-columns: 24px minmax(0,1fr) 34px;
-  padding: 0 14px;
-}
-
-.inner-app .search-result-list {
-  gap: 10px;
-}
-
-.inner-app .search-result-card {
-  gap: 5px;
-  padding: 15px 16px;
-  border-radius: 19px;
-}
-
-.inner-app .search-result-card > span {
-  font-size: 12px;
-}
-
-.inner-app .search-result-card strong {
-  font-size: 17px;
-  font-weight: 800;
-}
-
-.inner-app .search-result-card small {
-  font-size: 14px;
-}
-
-.inner-app .portfolio-toolbar {
-  padding: 3px 1px;
-}
-
-.inner-app .portfolio-toolbar strong {
-  font-weight: 850;
-}
-
-.inner-app .portfolio-actions {
-  border-top-color: color-mix(in srgb, var(--border) 72%, transparent);
 }
 
 @media (max-width: 360px) {
