@@ -117,9 +117,11 @@
   text-align: center;
   color: var(--muted);
 }
-.portfolio-empty > span {
+.portfolio-empty > svg {
+  width: 36px;
+  height: 36px;
   color: var(--accent);
-  font-size: 34px;
+  stroke-width: 1.8;
 }
 .portfolio-empty strong {
   color: var(--text);
@@ -130,4 +132,20 @@
   margin: 0;
   font-size: 12px;
   line-height: 1.55;
+}
+
+.portfolio-actions .ui-button {
+  min-height: 40px;
+  border-radius: 0;
+  padding: 0 8px;
+}
+
+.portfolio-actions .ui-button-danger {
+  background: color-mix(in srgb, #bd4d4d 8%, transparent);
+  color: #b74444;
+}
+
+.portfolio-actions .ui-button-icon {
+  width: 17px;
+  height: 17px;
 }
