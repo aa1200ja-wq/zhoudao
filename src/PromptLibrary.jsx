@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Folder, Heart, Image, Plus, Search, X } from 'lucide-react'
 import { FolderManager, PromptEditor, emptyPrompt, labelForFilter } from './PromptPanels'
 import GalleryViewer from './GalleryViewer'
 import { DEFAULT_FOLDERS, SPECIAL_FILTERS } from './promptConfig'
@@ -57,20 +58,26 @@ export default function PromptLibrary({
       <button
         className={searchOpen ? 'active' : ''}
         onClick={() => setSearchOpen(!searchOpen)}
-      >⌕ 搜尋</button>
-      <button className="primary-action" onClick={() => setEditing(emptyPrompt('未整理'))}>＋ 新增</button>
-      <button onClick={() => setShowFolderManager(true)}>▣ 資料夾</button>
+      ><Search aria-hidden="true" />搜尋</button>
+      <button className="primary-action" onClick={() => setEditing(emptyPrompt('未整理'))}>
+        <Plus aria-hidden="true" />新增
+      </button>
+      <button onClick={() => setShowFolderManager(true)}>
+        <Folder aria-hidden="true" />資料夾
+      </button>
     </div>
 
     {searchOpen && <div className="prompt-search prompt-search-expanded">
-      <span>⌕</span>
+      <Search aria-hidden="true" />
       <input
         autoFocus
         value={query}
         onChange={e => setQuery(e.target.value)}
         placeholder="搜尋圖片名稱、Prompt、標籤…"
       />
-      {query && <button className="search-clear" onClick={() => setQuery('')}>×</button>}
+      {query && <button className="search-clear" onClick={() => setQuery('')} aria-label="清除搜尋">
+        <X aria-hidden="true" />
+      </button>}
     </div>}
 
     <div className="folder-strip">
@@ -103,7 +110,7 @@ export default function PromptLibrary({
         <div className={'prompt-thumb ' + (!item.image ? 'no-image' : '')}>
           {item.image
             ? <img src={item.image} alt={item.title} />
-            : <span>✦</span>}
+            : <Image aria-hidden="true" />}
           <button
             className={'favorite-badge ' + (item.favorite ? 'active' : '')}
             onClick={e => {
@@ -111,7 +118,7 @@ export default function PromptLibrary({
               quickPatch(item, { favorite: !item.favorite })
             }}
             aria-label="收藏"
-          >☆</button>
+          ><Heart aria-hidden="true" /></button>
           {item.verified && <span className="verified-badge">已驗證</span>}
         </div>
         <div className="prompt-tile-copy">
@@ -123,7 +130,7 @@ export default function PromptLibrary({
         </div>
       </div>)}
     </div> : <div className="prompt-empty">
-      <span>✦</span>
+      <Image aria-hidden="true" />
       <strong>這裡還沒有內容</strong>
       <p>換個資料夾、搜尋詞，或新增一組提示詞。</p>
     </div>}
