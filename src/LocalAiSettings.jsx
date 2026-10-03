@@ -32,7 +32,11 @@ export default function LocalAiSettings({ preferences, onPreferenceChange }) {
   const [message, setMessage] = useState('')
   const [busy, setBusy] = useState(false)
 
-  useEffect(() => subscribeAi(setAi), [])
+  useEffect(() => {
+    const unsubscribe = subscribeAi(setAi)
+    inspect()
+    return unsubscribe
+  }, [])
 
   async function inspect() {
     setBusy(true)
@@ -80,7 +84,7 @@ export default function LocalAiSettings({ preferences, onPreferenceChange }) {
   }
 
   async function clearModel() {
-    if (!window.confirm('刪除周到使用的 Qwen 本機模型快取？專案與圖片資料不會刪除。')) return
+    if (!window.confirm('刪除目前 PWA 可見的 Qwen 模型快取？若其他同源 PWA 共用快取，也可能需要重新載入模型；專案與圖片不會刪除。')) return
     setBusy(true)
     try {
       await unloadModel()
