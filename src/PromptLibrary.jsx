@@ -9,7 +9,6 @@ export default function PromptLibrary({
   folders = DEFAULT_FOLDERS,
   onSave,
   onFoldersChange,
-  aiGalleryAssist = true,
 }) {
   const [query, setQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
@@ -150,7 +149,6 @@ export default function PromptLibrary({
     {editing && <PromptEditor
       item={editing}
       folders={folderList}
-      aiAssist={aiGalleryAssist}
       onClose={() => setEditing(null)}
       onSave={async item => {
         await onSave(item)
