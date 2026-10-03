@@ -1,0 +1,89 @@
+/* Premium treatment for search and portfolio */
+.inner-app .portfolio-page,
+.inner-app .global-search-page {
+  gap: 16px;
+}
+
+.inner-app .global-search-box {
+  min-height: 54px;
+  grid-template-columns: 24px minmax(0,1fr) 34px;
+  padding: 0 14px;
+  border-color: color-mix(in srgb, var(--border) 80%, transparent);
+  border-radius: 17px;
+  background: var(--surface);
+  box-shadow: var(--ui-shadow-soft);
+}
+
+.inner-app .global-search-box > svg {
+  width: 19px;
+  height: 19px;
+  color: var(--muted);
+}
+
+.inner-app .global-search-box button svg {
+  width: 17px;
+  height: 17px;
+}
+
+.inner-app .search-result-list {
+  gap: 10px;
+}
+
+.inner-app .search-result-card {
+  gap: 5px;
+  padding: 15px 16px;
+  border-radius: 19px;
+}
+
+.inner-app .search-result-card > span {
+  font-size: 12px;
+}
+
+.inner-app .search-result-card strong {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.inner-app .search-result-card small {
+  font-size: 14px;
+}
+
+.inner-app .portfolio-toolbar {
+  padding: 3px 1px;
+}
+
+.inner-app .portfolio-toolbar strong {
+  font-weight: 850;
+}
+
+.inner-app .portfolio-grid {
+  gap: 12px;
+}
+
+.inner-app .portfolio-card {
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.inner-app .portfolio-thumb {
+  background: var(--surface-soft);
+}
+
+.inner-app .portfolio-empty > svg {
+  width: 34px;
+  height: 34px;
+  color: var(--accent);
+  stroke-width: 1.7;
+}
+
+.inner-app .portfolio-copy {
+  padding: 12px;
+}
+
+.inner-app .portfolio-copy strong {
+  font-weight: 800;
+}
+
+.inner-app .portfolio-actions {
+  border-top-color: color-mix(in srgb, var(--border) 72%, transparent);
+}
