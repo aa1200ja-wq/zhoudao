@@ -7,7 +7,6 @@ export default function HomeStage({
   assistant,
   preferences,
   projects,
-  inbox,
   pending,
   onOpenPage,
 }) {
@@ -56,8 +55,6 @@ export default function HomeStage({
 
         const lines = await generateHomeDialogue({
           assistantName: assistant.name || '小周',
-          project: activeProject,
-          todos: (inbox || []).filter(isTodoOpenToday),
           pending,
           timeOfDay: timeOfDay(),
         })
@@ -75,7 +72,6 @@ export default function HomeStage({
     assistant.name,
     activeProject?.id,
     activeProject?.updatedAt,
-    inbox,
     pending,
   ])
 
@@ -161,22 +157,6 @@ function RailAction({ item, side, onClick }) {
 function isCompleted(project) {
   const status = String(project?.status || '')
   return status.includes('完成') || status.includes('結案')
-}
-
-function isTodoOpenToday(item) {
-  const today = dayKey()
-  if (item.completedDate === today || item.skippedDate === today) return false
-  if (item.completed && dayKey(item.updatedAt) === today) return false
-  return true
-}
-
-function dayKey(value = Date.now()) {
-  const date = new Date(value)
-  return [
-    date.getFullYear(),
-    String(date.getMonth() + 1).padStart(2, '0'),
-    String(date.getDate()).padStart(2, '0'),
-  ].join('-')
 }
 
 function timeOfDay() {
