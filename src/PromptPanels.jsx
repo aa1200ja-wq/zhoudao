@@ -1,5 +1,8 @@
 import { useState } from 'react'
+import { BadgeCheck, Copy, Heart, Pencil, Plus, Save } from 'lucide-react'
 import { SPECIAL_FILTERS } from './promptConfig'
+import Button from './ui/Button'
+import Sheet from './ui/Sheet'
 
 export function PromptDetail({ item, folders, onClose, onEdit, onPatch }) {
   async function copyPrompt() {
@@ -11,8 +14,18 @@ export function PromptDetail({ item, folders, onClose, onEdit, onPatch }) {
     <div className="prompt-detail-meta">
       <span>{item.folder || '未整理'}</span>
       <div>
-        <button className={item.favorite ? 'active' : ''} onClick={() => onPatch({ favorite: !item.favorite })}>☆ 收藏</button>
-        <button className={item.verified ? 'active' : ''} onClick={() => onPatch({ verified: !item.verified })}>✓ 已驗證</button>
+        <Button
+          variant={item.favorite ? 'soft' : 'secondary'}
+          size="sm"
+          icon={Heart}
+          onClick={() => onPatch({ favorite: !item.favorite })}
+        >收藏</Button>
+        <Button
+          variant={item.verified ? 'soft' : 'secondary'}
+          size="sm"
+          icon={BadgeCheck}
+          onClick={() => onPatch({ verified: !item.verified })}
+        >已驗證</Button>
       </div>
     </div>
     <div className="prompt-detail-tags">
@@ -24,8 +37,8 @@ export function PromptDetail({ item, folders, onClose, onEdit, onPatch }) {
     </div>
     {item.note && <div className="prompt-note"><small>備註</small><p>{item.note}</p></div>}
     <div className="prompt-detail-actions">
-      <button className="secondary" onClick={onEdit}>編輯</button>
-      <button className="primary" onClick={copyPrompt}>複製 Prompt</button>
+      <Button variant="secondary" icon={Pencil} onClick={onEdit}>編輯</Button>
+      <Button variant="primary" icon={Copy} onClick={copyPrompt}>複製 Prompt</Button>
     </div>
     <label className="prompt-move">
       <span>移到資料夾</span>
@@ -63,17 +76,29 @@ export function PromptEditor({ item, folders, onClose, onSave }) {
     <label className="upload">選擇圖片<input type="file" accept="image/*" onChange={e => chooseImage(e.target.files?.[0])} /></label>
     {draft.image && <img className="preview" src={draft.image} alt="預覽" />}
     <div className="editor-checks">
-      <button className={draft.favorite ? 'active' : ''} onClick={() => setDraft({ ...draft, favorite: !draft.favorite })}>☆ 收藏</button>
-      <button className={draft.verified ? 'active' : ''} onClick={() => setDraft({ ...draft, verified: !draft.verified })}>✓ 已驗證</button>
+      <Button
+        variant={draft.favorite ? 'soft' : 'secondary'}
+        size="sm"
+        icon={Heart}
+        onClick={() => setDraft({ ...draft, favorite: !draft.favorite })}
+      >收藏</Button>
+      <Button
+        variant={draft.verified ? 'soft' : 'secondary'}
+        size="sm"
+        icon={BadgeCheck}
+        onClick={() => setDraft({ ...draft, verified: !draft.verified })}
+      >已驗證</Button>
     </div>
-    <button
-      className="primary full"
+    <Button
+      variant="primary"
+      full
+      icon={Save}
       disabled={!draft.title.trim()}
       onClick={() => onSave({
         ...draft,
         tags: String(draft.tags).split(',').map(x => x.trim()).filter(Boolean),
       })}
-    >儲存資料</button>
+    >儲存資料</Button>
   </Sheet>
 }
 
@@ -93,22 +118,17 @@ export function FolderManager({ folders, onClose, onSave }) {
         />
         <button onClick={() => setDrafts(drafts.filter((_, i) => i !== index))}>×</button>
       </div>)}
-      <button className="secondary full" onClick={() => setDrafts([...drafts, '新資料夾'])}>＋ 新增資料夾</button>
+      <Button variant="secondary" full icon={Plus} onClick={() => setDrafts([...drafts, '新資料夾'])}>
+        新增資料夾
+      </Button>
     </div>
-    <button
-      className="primary full"
+    <Button
+      variant="primary"
+      full
+      icon={Save}
       onClick={() => onSave([...new Set(drafts.map(x => x.trim()).filter(Boolean))])}
-    >儲存資料夾</button>
+    >儲存資料夾</Button>
   </Sheet>
-}
-
-function Sheet({ title, onClose, children }) {
-  return <div className="overlay" onMouseDown={onClose}>
-    <div className="modal prompt-sheet" onMouseDown={e => e.stopPropagation()}>
-      <div className="row"><h2>{title}</h2><button className="icon" onClick={onClose}>×</button></div>
-      {children}
-    </div>
-  </div>
 }
 
 export function emptyPrompt(folder) {
