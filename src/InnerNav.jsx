@@ -8,7 +8,10 @@ export default function InnerNav({ page, items, onOpen }) {
         key={nav.page}
         className={page === nav.page ? 'active' : ''}
         onClick={() => onOpen(nav.page)}
-      >{nav.label}</button>
+      >
+        <span className="inner-nav-icon" aria-hidden="true">{nav.icon}</span>
+        <span className="inner-nav-label">{nav.label}</span>
+      </button>
     })}
   </nav>
 }
