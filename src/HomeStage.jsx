@@ -20,7 +20,7 @@ export default function HomeStage({
   const activeProject = useMemo(() => {
     if (assistant.activeProjectId) {
       const selected = projects.find(project => project.id === assistant.activeProjectId)
-      if (selected) return selected
+      if (selected && !isCompleted(selected)) return selected
     }
     return projects.find(project => !isCompleted(project)) || projects[0] || null
   }, [assistant.activeProjectId, projects])
@@ -130,7 +130,7 @@ export default function HomeStage({
     <button className="dialogue-layer" onClick={sayNext}>
       <span className="dialogue-name">{assistant.name || '小周'}</span>
       <span className="dialogue-rule" />
-      <p>{aiBusy ? line : line}</p>
+      <p>{line}</p>
     </button>
   </section>
 }
@@ -162,7 +162,10 @@ function RailAction({ item, side, onClick }) {
 
 function isCompleted(project) {
   const status = String(project?.status || '')
-  return status.includes('完成') || status.includes('結案')
+  return Boolean(project?.archived)
+    || status.includes('完成')
+    || status.includes('封存')
+    || status.includes('結案')
 }
 
 function isTodoOpenToday(item) {
