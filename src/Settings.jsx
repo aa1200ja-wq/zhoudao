@@ -36,6 +36,13 @@ export default function Settings({
 
 
   return <div className="settings-page">
+    <div className="settings-intro">
+      <span>SETTINGS</span>
+      <strong>把周到調成你順手的樣子</strong>
+      <p>介面、首頁、導覽與 PWA 都集中在這裡。</p>
+    </div>
+
+    <p className="settings-section-label">一般</p>
     <details className="settings-card setting-accordion" open>
       <summary>
         <div><strong>顯示與預覽</strong><p>深色模式、手機預覽。</p></div>
@@ -70,6 +77,7 @@ export default function Settings({
 
     <PwaInstall />
 
+    <p className="settings-section-label">外觀與導覽</p>
     <details className="settings-card setting-accordion">
       <summary>
         <div><strong>首頁背景</strong><p>預設背景與自訂圖片。</p></div>
