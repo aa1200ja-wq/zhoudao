@@ -1,50 +1,11 @@
 import { useState } from 'react'
-import { Archive, ArchiveRestore, Pencil, Save, Sparkles } from 'lucide-react'
+import { Archive, ArchiveRestore, Pencil, Save } from 'lucide-react'
 import Button from './ui/Button'
 import Sheet from './ui/Sheet'
-import { organizeProjectDraft } from './ai/localAiTasks'
 
-export function ProjectModal({ project, onClose, onSave, onArchive, aiProjectAssist = true }) {
+export function ProjectModal({ project, onClose, onSave, onArchive }) {
   const [editing, setEditing] = useState(!project.id)
   const [draft, setDraft] = useState(project)
-  const [aiBusy, setAiBusy] = useState(false)
-  const [aiMessage, setAiMessage] = useState('')
-
-  async function organizeWithAi() {
-    const source = [
-      draft.draft,
-      draft.current,
-      draft.currentStepDetail,
-      draft.currentTask,
-      draft.next,
-      draft.nextDetail,
-    ].filter(Boolean).join('\n')
-
-    if (!source.trim()) {
-      setAiMessage('先輸入一些專案內容。')
-      return
-    }
-
-    setAiBusy(true)
-    setAiMessage('本機 AI 整理中…')
-    try {
-      const result = await organizeProjectDraft(source)
-      setDraft(current => ({
-        ...current,
-        current: result.current || current.current,
-        currentStepDetail: result.current || current.currentStepDetail,
-        currentTask: result.currentTask || current.currentTask,
-        next: result.next || current.next,
-        nextDetail: result.next || current.nextDetail,
-      }))
-      setAiMessage('已整理，可再手動修改後儲存。')
-    } catch (error) {
-      setAiMessage(error?.message || String(error))
-    } finally {
-      setAiBusy(false)
-    }
-  }
-
   if (!editing) {
     return <Sheet title="專案續接" onClose={onClose}>
       <div className="project-accordion-stack">
@@ -130,13 +91,6 @@ export function ProjectModal({ project, onClose, onSave, onArchive, aiProjectAss
     <label>目前步驟<textarea value={draft.current} onChange={e => setDraft({ ...draft, current: e.target.value })} /></label>
     <label>下一步<textarea value={draft.next} onChange={e => setDraft({ ...draft, next: e.target.value })} /></label>
     <label>我的草稿<textarea value={draft.draft} onChange={e => setDraft({ ...draft, draft: e.target.value })} /></label>
-    {aiProjectAssist && <div className="ai-inline-assist">
-      <Button variant="soft" full icon={Sparkles} disabled={aiBusy} onClick={organizeWithAi}>
-        {aiBusy ? 'AI 整理中…' : 'AI 整理專案草稿'}
-      </Button>
-      {aiMessage && <small>{aiMessage}</small>}
-    </div>}
-
     <details className="settings-card setting-accordion project-edit-detail">
       <summary>
         <div>
