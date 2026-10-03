@@ -208,7 +208,7 @@ export default function App() {
           items={library}
           folders={preferences.promptFolders}
           onSave={saveLibrary}
-          onFoldersChange={folders => updatePreferences({ promptFolders: folders })}
+          onFoldersChange={folders => updatePreferences({ promptFolders: folders })} aiGalleryAssist={preferences.aiGalleryAssist !== false}
         />}
         {page === '全域搜尋' && <GlobalSearch
           projects={projects}
@@ -240,7 +240,7 @@ export default function App() {
       project={modal}
       onClose={() => setModal(null)}
       onSave={saveProject}
-      onArchive={setProjectArchived}
+      onArchive={setProjectArchived} aiProjectAssist={preferences.aiProjectAssist !== false}
     />}
   </main>
 }
