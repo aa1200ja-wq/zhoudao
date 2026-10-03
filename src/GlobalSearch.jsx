@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react'
+import { Search, X } from 'lucide-react'
+import Card from './ui/Card'
 
 export default function GlobalSearch({ projects, inbox, library, onOpenPage, onOpenProject }) {
   const [query, setQuery] = useState('')
@@ -60,14 +62,14 @@ export default function GlobalSearch({ projects, inbox, library, onOpenPage, onO
 
   return <div className="global-search-page">
     <div className="global-search-box">
-      <span>⌕</span>
+      <Search aria-hidden="true" />
       <input
         autoFocus
         value={query}
         onChange={e => setQuery(e.target.value)}
         placeholder="搜尋專案、待辦、圖庫、Prompt、README…"
       />
-      {query && <button onClick={() => setQuery('')}>×</button>}
+      {query && <button onClick={() => setQuery('')} aria-label="清除搜尋"><X aria-hidden="true" /></button>}
     </div>
 
     {!query.trim() ? <div className="search-empty-state">
@@ -76,11 +78,17 @@ export default function GlobalSearch({ projects, inbox, library, onOpenPage, onO
     </div> : <>
       <div className="search-result-count">{results.length} 筆結果</div>
       {results.length ? <div className="search-result-list">
-        {results.map(item => <button key={item.id} className="search-result-card" onClick={item.action}>
+        {results.map(item => <Card
+          as="button"
+          interactive
+          key={item.id}
+          className="search-result-card"
+          onClick={item.action}
+        >
           <span>{item.type}</span>
           <strong>{item.title}</strong>
           <small>{item.summary}</small>
-        </button>)}
+        </Card>)}
       </div> : <div className="search-empty-state">
         <strong>找不到相關內容</strong>
         <p>可以換一個關鍵字再試。</p>
