@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import AssistantSettings from './AssistantSettings'
 import BottomNavOrder from './BottomNavOrder'
 import PwaInstall from './PwaInstall'
+import ActivityLogSettings from './ActivityLogSettings'
 import { DEFAULT_BOTTOM_NAV, DEFAULT_SHORTCUTS, SHORTCUT_OPTIONS, resolveShortcut } from './navigation'
 
 const BACKGROUNDS = [
@@ -131,5 +132,8 @@ export default function Settings({
         </div>
       </div>
     </details>
+
+    <p className="settings-section-label">系統</p>
+    <ActivityLogSettings />
   </div>
 }
