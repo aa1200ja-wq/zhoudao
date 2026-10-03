@@ -13,6 +13,7 @@ import { normalizeBottomNav } from './navigation'
 import { DEFAULT_ASSISTANT, normalizeAssistant } from './assistantConfig'
 import { DEFAULT_PREFS, EMPTY_PROJECT } from './appDefaults'
 import { toDataUrl } from './fileUtils'
+import { recordProjectActivity } from './activityService'
 
 export default function App() {
   const [page, setPage] = useState('首頁')
@@ -50,21 +51,26 @@ export default function App() {
 
   async function saveProject(project) {
     const id = project.id || 'project-' + crypto.randomUUID()
-    await db.projects.put({ ...project, id, updatedAt: Date.now() })
+    const previous = project.id ? await db.projects.get(id) : null
+    const next = { ...project, id, updatedAt: Date.now() }
+    await db.projects.put(next)
+    await recordProjectActivity(previous, next, previous ? 'update' : 'create')
     await markDirty()
     setModal(null)
     reload()
   }
 
   async function setProjectArchived(project, archived) {
-    await db.projects.put({
+    const next = {
       ...project,
       status: archived ? '已完成' : '進行中',
       archived,
       archivedAt: archived ? Date.now() : null,
       progress: archived ? 100 : project.progress,
       updatedAt: Date.now(),
-    })
+    }
+    await db.projects.put(next)
+    await recordProjectActivity(project, next, archived ? 'archive' : 'restore')
     await markDirty()
     setModal(null)
     reload()
@@ -111,6 +117,7 @@ export default function App() {
       updatedAt: Date.now(),
     }
     await db.projects.put(project)
+    await recordProjectActivity(null, project, 'create')
     await markDirty()
     await db.inbox.put({
       ...item,
