@@ -1,0 +1,95 @@
+/* Hidden system activity timeline */
+.activity-setting-body {
+  display: grid;
+  gap: 12px;
+}
+
+.activity-setting-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--type-secondary);
+  line-height: 1.5;
+}
+
+.activity-log-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.activity-log-toolbar > span {
+  color: var(--muted);
+  font-size: var(--type-secondary);
+  font-weight: 750;
+}
+
+.activity-log-list {
+  display: grid;
+  gap: 9px;
+}
+
+.activity-log-item {
+  min-width: 0;
+  padding: 13px 14px;
+  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  border-radius: 16px;
+  background: var(--surface-soft);
+}
+
+.activity-log-item > div {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.activity-log-item strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text);
+  font-size: var(--type-card-title);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activity-log-item time,
+.activity-log-item small {
+  color: var(--muted);
+  font-size: var(--type-meta);
+}
+
+.activity-log-item time {
+  flex: 0 0 auto;
+}
+
+.activity-log-item p {
+  margin: 6px 0 5px;
+  color: var(--text);
+  font-size: var(--type-body);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.activity-log-empty {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.activity-log-empty strong {
+  color: var(--text);
+  font-size: var(--type-card-title);
+}
+
+.activity-log-empty p {
+  max-width: 280px;
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--type-secondary);
+  line-height: 1.5;
+}
