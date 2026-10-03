@@ -1,11 +1,11 @@
 import { db } from './db'
 
-const TABLES = ['projects', 'library', 'inbox', 'settings', 'portfolio']
+const TABLES = ['projects', 'library', 'inbox', 'settings', 'portfolio', 'activity']
 
 export async function exportLocalBackup() {
   const data = {
     app: 'zhoudao',
-    formatVersion: 1,
+    formatVersion: 2,
     exportedAt: new Date().toISOString(),
     tables: {},
   }
@@ -39,6 +39,7 @@ export async function importLocalBackup(file) {
     db.inbox,
     db.settings,
     db.portfolio,
+    db.activity,
     async () => {
       for (const name of TABLES) {
         const table = db.table(name)
