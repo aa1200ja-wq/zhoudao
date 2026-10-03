@@ -17,12 +17,12 @@ export const RIGHT_ACTIONS = [
 ]
 
 export const BOTTOM_NAV_OPTIONS = [
-  { id: 'todo', label: '待辦事項', page: '待辦事項' },
-  { id: 'project', label: '專案', page: '專案' },
-  { id: 'prompt', label: '圖庫', page: '圖庫' },
-  { id: 'search', label: '搜尋', page: '全域搜尋' },
-  { id: 'portfolio', label: '作品集', page: '作品集' },
-  { id: 'settings', label: '設定', page: '設定' },
+  { id: 'todo', label: '待辦', icon: '✓', page: '待辦事項' },
+  { id: 'project', label: '專案', icon: '▣', page: '專案' },
+  { id: 'prompt', label: '圖庫', icon: '✦', page: '圖庫' },
+  { id: 'search', label: '搜尋', icon: '⌕', page: '全域搜尋' },
+  { id: 'portfolio', label: '作品集', icon: '▤', page: '作品集' },
+  { id: 'settings', label: '設定', icon: '⚙', page: '設定' },
 ]
 
 export const DEFAULT_SHORTCUTS = ['quick', 'project', 'prompt', 'appearance']
